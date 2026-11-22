@@ -1,0 +1,73 @@
+# Single home of every threshold and tunable (plan.md section 9).
+# Validated at startup by core/rules.py: the app refuses to start if this is invalid.
+version: 1
+
+levels: [LOW, MODERATE, HIGH, SEVERE, NO_TRAVEL]   # ordinal 0..4; NO_FORECAST is separate
+
+classification:
+  wind_source: sustained          # sustained | gust (future "conservative mode")
+
+thresholds:                       # highest satisfied band wins; otherwise LOW
+  wind_mph:
+    - {level: MODERATE,  from: 25,   inclusive: true}
+    - {level: HIGH,      from: 35,   inclusive: true}
+    - {level: SEVERE,    from: 45,   inclusive: true}
+    - {level: NO_TRAVEL, from: 55,   inclusive: true}    # >= 55
+  rain_in_hr:
+    - {level: MODERATE,  from: 0.10, inclusive: true}
+    - {level: HIGH,      from: 0.25, inclusive: true}
+    - {level: SEVERE,    from: 0.50, inclusive: true}
+    - {level: NO_TRAVEL, from: 1.00, inclusive: false}   # > 1.00
+  snow_in_hr:
+    - {level: MODERATE,  from: 0.5,  inclusive: true}
+    - {level: HIGH,      from: 1.0,  inclusive: true}
+    - {level: SEVERE,    from: 2.0,  inclusive: true}
+    - {level: NO_TRAVEL, from: 3.0,  inclusive: false}   # > 3.0
+
+load_rules:                       # raise-only; wind-only per spec
+  - {condition: wind_mph, from: 55, to_exclusive: null, load_gt_lb: null,  level: NO_TRAVEL}
+  - {condition: wind_mph, from: 45, to_exclusive: 55,   load_gt_lb: 30000, level: NO_TRAVEL}
+  - {condition: wind_mph, from: 35, to_exclusive: 45,   load_gt_lb: 40000, level: SEVERE}
+
+scoring:
+  level_weights: {LOW: 0, MODERATE: 1, HIGH: 2, SEVERE: 3, NO_TRAVEL: 4}
+  rounding: {miles: 1, avg_risk: 3}
+
+intervals:                        # chosen from the longest route
+  - {max_mi_exclusive: 400,  interval_mi: 10}
+  - {max_mi_inclusive: 1000, interval_mi: 25}
+  - {otherwise: true,        interval_mi: 50}
+
+hours_of_service:
+  break_after_driving_h: 8
+  break_duration_min: 30
+  max_driving_h: 11
+  rest_duration_h: 10
+
+truck:
+  max_speed_kmh: 105              # about 65 mph
+  tare_weight_lb: 35000
+  load_min_lb: 1000
+  load_max_lb: 80000
+  load_warning_lb: 45000
+
+alternatives:
+  max_overlap_ratio: 0.70
+  max_time_ratio: 1.40
+  via_offset_ratio: 0.12
+
+departure:
+  max_ahead_h: 48
+  past_grace_min: 5
+  long_range_note_h: 72
+
+weather_grid:
+  checkpoint_deg: 0.1
+  heatmap_deg: 0.2
+  corridor_mi: 30
+  forecast_ttl_s: 3600
+  stale_ttl_s: 86400
+  batch_size: 200
+
+heatmap:
+  hours: 49                       # 0..48 inclusive
