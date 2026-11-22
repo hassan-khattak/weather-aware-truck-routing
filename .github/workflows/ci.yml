@@ -61,3 +61,29 @@ jobs:
       - run: npm run format:check
       - run: npm test
       - run: npm run build
+
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive infra
+      - run: |
+          for dir in infra/bootstrap infra/main; do
+            terraform -chdir="$dir" init -backend=false -input=false
+            terraform -chdir="$dir" validate
+          done
+
+  deploy-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate production compose file
+        run: |
+          BACKEND_IMAGE=x GIT_SHA=x SECRET_KEY=x ORIGIN_SECRET=x POSTGRES_PASSWORD=x ALLOWED_HOSTS=x \
+            docker compose -f docker-compose.prod.yml config -q
+      - name: Validate Caddyfile
+        run: |
+          docker run -e ORIGIN_SECRET=x -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            caddy:2 caddy validate --config /etc/caddy/Caddyfile
+      - run: bash -n deploy/remote-deploy.sh

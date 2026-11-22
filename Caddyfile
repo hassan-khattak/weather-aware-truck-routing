@@ -1,0 +1,19 @@
+# Origin reverse proxy. CloudFront adds X-Origin-Secret; anything else is refused,
+# so hitting the EC2 address directly never reaches the app.
+{
+	auto_https off
+}
+
+:80 {
+	encode zstd gzip
+
+	@from_cloudfront header X-Origin-Secret {$ORIGIN_SECRET}
+
+	handle @from_cloudfront {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		respond "Forbidden" 403
+	}
+}

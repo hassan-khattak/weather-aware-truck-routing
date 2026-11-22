@@ -1,0 +1,51 @@
+# Production stack on the EC2 instance. Deployed by the CD workflow over SSM.
+# Required env (written to /opt/truckroute/.env by the deploy script from SSM parameters):
+#   BACKEND_IMAGE, GIT_SHA, SECRET_KEY, ORIGIN_SECRET, POSTGRES_PASSWORD, ALLOWED_HOSTS
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      ORIGIN_SECRET: ${ORIGIN_SECRET:?}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - backend
+
+  backend:
+    image: ${BACKEND_IMAGE:?}
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py createcachetable &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    environment:
+      DEBUG: "False"
+      SECRET_KEY: ${SECRET_KEY:?}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:?}
+      GIT_SHA: ${GIT_SHA:?}
+      DATABASE_URL: postgres://truckroute:${POSTGRES_PASSWORD:?}@db:5432/truckroute
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    # amd64 image; the t3.small instance is amd64.
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: truckroute
+      POSTGRES_USER: truckroute
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U truckroute -d truckroute"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  db_data:
