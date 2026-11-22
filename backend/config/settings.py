@@ -24,6 +24,9 @@ ALLOWED_HOSTS = [h for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1
 # Git commit of the running build; reported by /api/v1/health.
 GIT_SHA = os.environ.get("GIT_SHA", "dev")
 
+# Thresholds and tunables; validated at startup (see api/apps.py).
+RULES_PATH = Path(os.environ.get("RULES_PATH", BASE_DIR / "rules.yaml"))
+
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",

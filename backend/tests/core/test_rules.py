@@ -10,6 +10,7 @@ from typing import Any
 
 import pytest
 import yaml
+
 from core.rules import Rules, RulesError, load_rules, parse_rules
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
