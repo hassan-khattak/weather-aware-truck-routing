@@ -91,6 +91,7 @@ The expensive part of each search is weather, so that's where the scaling design
 - **One cache entry per grid cell, shared by all users.** Each entry holds the cell's full hourly series, so one fetch serves every hour, every route, the slider and **every user** who passes through that cell within the hour. Trucks drive the same corridors, so **cost and latency drop as usage grows**.
 - **Fetch only what's missing, in bulk.** Missing cells are requested in batched multi-location calls, in parallel.
 - **Sized for the weather provider's limits.** The free forecast API bills one call per location (600 per minute, 10,000 per day), so heatmap cells get coarser on long trips, keeping any single search to a few hundred locations. Measured on the sample trips: about 60 to 190 corridor cells.
+- **Cache sized on purpose.** Django's cache keeps only 300 entries by default and silently culls the rest; one long trip would have evicted every other trip's weather. The limit is raised to 20,000 entries (each entry is a few KB).
 - **Stateless API servers.** Any instance can serve any request; state lives in the cache and database.
 
 **Scaling path (in order, none requiring frontend changes):**
@@ -110,7 +111,8 @@ Smoothness was treated as a requirement, with explicit rules:
 - **Layers are created once.** Selecting a route changes styles; nothing is removed or re-added.
 - **Simplified geometry for drawing**, full geometry for the maths.
 - **A continuous truck marker** driven by a per-route timeline that includes stops.
-- **Target: 60 fps** while dragging or playing, verified with browser performance profiling.
+- **Target: 60 fps** while dragging or playing. CI smoke-tests frame times in headless Chrome (software rendering, so it only catches gross regressions); real-hardware profiling is done by hand.
+- **Tested as built.** One Playwright test runs the production bundle (not the dev server) and fails on any console error, because bundling can break things the dev server hides (it once did: the map's worker file was missing from the build, so nothing but the basemap was drawn).
 
 ---
 
@@ -118,6 +120,7 @@ Smoothness was treated as a requirement, with explicit rules:
 
 - **Always-on hosting**, defined in **Terraform** (EC2, Elastic IP, S3, CloudFront, IAM, ECR, billing alarm): no cold starts, and the infrastructure is reproducible.
 - **A single origin via CloudFront**: free HTTPS, no CORS, and no mixed-content issues. The EC2 origin only accepts traffic from CloudFront (managed prefix list + a secret origin header).
+- **Security headers everywhere:** CloudFront adds a strict Content-Security-Policy (own files, the OpenFreeMap tiles and the map worker only), HSTS, `X-Frame-Options: DENY`, `Referrer-Policy` and `Permissions-Policy`; Django adds `nosniff`, frame and opener policies to API responses. Rate limits count the real client IP through the CloudFront → Caddy chain (`NUM_PROXIES`), and a spoofed `X-Forwarded-For` prefix is ignored.
 - **No secrets in the repo or the browser bundle.** The basemap needs no key; routing and weather keys stay on the server; secrets live in SSM Parameter Store.
 - **CI/CD with GitHub Actions:** lint, type-checks, unit/integration/E2E tests on every push. Deploys require **manual approval**, authenticate to AWS with **OIDC** (no stored AWS keys), roll out over **SSM** (no SSH from CI), and finish with a smoke test. Images are tagged by commit for easy rollback.
 - **Graceful degradation:** if a provider fails, the last cached forecast is served with a clear "weather as of …" label. Rate limiting protects the free API quotas. Every error maps to a plain-language message with a next step.
@@ -131,7 +134,7 @@ Smoothness was treated as a requirement, with explicit rules:
 - **Property-based tests** (Hypothesis) for invariants that must always hold: risk miles add up to route distance, load rules never lower risk, heavier loads never lower risk, the recommendation is independent of input order, and ETAs never go backwards.
 - **Adapter tests against recorded real API responses**, so CI never depends on live services.
 - **A golden end-to-end API scenario** with frozen time.
-- **Playwright E2E tests** for the full journey, including **time-zone invariance** across browser zones. They run in a test-only fixture mode that replays recorded responses with timestamps re-based to "now".
+- **Playwright E2E tests** for the full journey, including **time-zone invariance** across browser zones. They run in a test-only fixture mode that replays recorded responses with timestamps re-based to "now". Every error path is exercised end to end by forcing it through a fixture-mode-only request header (it cannot exist in production), and the same journeys run against the production build.
 
 ---
 
@@ -143,6 +146,8 @@ Smoothness was treated as a requirement, with explicit rules:
 - **Typical traffic, not live traffic**, since departures are in the future.
 - **Forecast uncertainty** grows with lead time; the app flags long-range checkpoints but doesn't model probabilities.
 - **CloudFront → origin traffic is HTTP** in this MVP (locked to CloudFront); a production setup would add TLS to the origin.
+- **Cold `/routes` is slow on very long trips.** TomTom itself needs about 5–7 seconds to return three truck routes for a ~1,000-mile trip (a ~2 MB response; one route alone still takes ~2.5 s). Short trips answer in 1–2 seconds, repeats from the cache in under 150 ms, and the progress steps say what is happening meanwhile. `/risk` is fast (under 2 s cold, under 120 ms warm).
+- **Bundle size:** about 586 KB gzipped in total (app 414 KB, map worker 158 KB, CSS 15 KB), above the 500 KB I first aimed for. MapLibre GL v6 is most of it; it is cached immutably after the first visit. Splitting the map into a lazily loaded chunk is on the roadmap.
 - **Continental US only.**
 
 ---
@@ -154,6 +159,7 @@ Smoothness was treated as a requirement, with explicit rules:
 - **Weather-adjusted speeds**, resolving the ETA ↔ weather dependency iteratively.
 - **Truck-stop-aware rest planning.**
 - **Canada and Mexico** support.
+- **Lazy-load the map** so the form is interactive before MapLibre arrives, and **cache TomTom routes** per lane and departure hour.
 - **Uniform fine-grained sampling** (always 10 mi internally, aggregated for display).
 
 ---
