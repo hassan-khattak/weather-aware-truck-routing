@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTrip } from './api/hooks'
 import { serverFieldErrors } from './lib/serverErrors'
 import { HeatmapControls } from './map/HeatmapControls'
+import { TimeSlider } from './map/TimeSlider'
 import { MapView } from './map/MapView'
 import { Panel } from './panel/Panel'
 import { CheckpointList } from './panel/CheckpointList'
@@ -82,6 +83,14 @@ export default function App() {
           onPickCheckpoint={setActiveCheckpoint}
         />
         {risk.data && <HeatmapControls />}
+        {risk.data && routes.data && risk.data.heatmap.hours > 0 && (
+          <TimeSlider
+            startUtc={risk.data.heatmap.start_utc}
+            tz={routes.data.departure.tz}
+            hours={risk.data.heatmap.hours}
+            route={routes.data.routes.find((r) => r.id === selectedId)}
+          />
+        )}
       </div>
     </main>
   )
