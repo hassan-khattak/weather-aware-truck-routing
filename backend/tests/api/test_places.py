@@ -92,3 +92,10 @@ def test_a_place_outside_the_us_has_no_time_zone(monkeypatch: pytest.MonkeyPatch
     monkeypatch.setattr("api.views.routing_provider", lambda: Stub())
     zones = [p["tz"] for p in get("Tor").json()]
     assert zones == [None, "America/Chicago"]
+
+
+def test_a_very_long_query_is_rejected_before_reaching_the_provider() -> None:
+    response = APIClient().get("/api/v1/places?q=" + "a" * 101)
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "VALIDATION_ERROR"
+    assert "too long" in response.json()["error"]["message"]

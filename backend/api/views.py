@@ -30,6 +30,7 @@ from trips.store import load_trip, save_trip
 from weather_grid.service import WeatherGridService
 
 PLACES_MIN_CHARS = 3
+PLACES_MAX_CHARS = 100
 PLACES_LIMIT = 6
 
 
@@ -62,6 +63,10 @@ class PlacesView(APIView):
         query = " ".join(request.query_params.get("q", "").split())
         if len(query) < PLACES_MIN_CHARS:
             raise message_error("q", f"Type at least {PLACES_MIN_CHARS} characters to search.")
+        if len(query) > PLACES_MAX_CHARS:
+            raise message_error(
+                "q", f"Search text is too long (at most {PLACES_MAX_CHARS} characters)."
+            )
         places = routing_provider().search(query, PLACES_LIMIT)
         # `tz` lets the form label the departure field with the origin's zone before searching.
         return Response(
