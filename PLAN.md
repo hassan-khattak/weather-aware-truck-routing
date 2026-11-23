@@ -87,9 +87,10 @@ CloudFront ──/*──────► S3 (static build)
 
 The expensive part of each search is weather, so that's where the scaling design focuses:
 
-- **Snap to a weather grid.** Every checkpoint and heatmap cell is snapped to a fixed grid (0.1° for checkpoints, 0.2° for the heatmap). The forecast models behind the data are roughly 3–13 km resolution, so no real accuracy is lost.
+- **Snap to a weather grid.** Every checkpoint and heatmap cell is snapped to a fixed grid (0.1° for checkpoints; 0.2° heatmap cells, growing to 0.4° and 0.8° on longer trips). The forecast models behind the data are roughly 3–13 km resolution, so no real accuracy is lost.
 - **One cache entry per grid cell, shared by all users.** Each entry holds the cell's full hourly series, so one fetch serves every hour, every route, the slider and **every user** who passes through that cell within the hour. Trucks drive the same corridors, so **cost and latency drop as usage grows**.
 - **Fetch only what's missing, in bulk.** Missing cells are requested in batched multi-location calls, in parallel.
+- **Sized for the weather provider's limits.** The free forecast API bills one call per location (600 per minute, 10,000 per day), so heatmap cells get coarser on long trips, keeping any single search to a few hundred locations. Measured on the sample trips: about 60 to 190 corridor cells.
 - **Stateless API servers.** Any instance can serve any request; state lives in the cache and database.
 
 **Scaling path (in order, none requiring frontend changes):**
