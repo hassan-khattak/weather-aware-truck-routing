@@ -77,3 +77,6 @@ weather_grid:
 
 heatmap:
   hours: 49                       # 0..48 inclusive
+
+display:
+  geometry_tolerance_deg: 0.002    # simplification of drawn route lines (about 0.14 mi)

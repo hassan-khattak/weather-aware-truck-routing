@@ -143,6 +143,14 @@ class Heatmap(_Model):
     hours: int
 
 
+class Display(_Model):
+    """Presentation tuning: how much detail the browser gets."""
+
+    # Route lines are simplified (Douglas-Peucker) to this many degrees before being sent for
+    # drawing; the full geometry is kept for all calculations. 0.002 deg is about 0.14 miles.
+    geometry_tolerance_deg: float = Field(gt=0)
+
+
 class Rules(_Model):
     version: int
     levels: list[Level]
@@ -157,6 +165,7 @@ class Rules(_Model):
     departure: Departure
     weather_grid: WeatherGrid
     heatmap: Heatmap
+    display: Display
 
     @field_validator("intervals")
     @classmethod
