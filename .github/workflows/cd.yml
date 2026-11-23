@@ -87,6 +87,9 @@ jobs:
           # Hashed assets are immutable; index.html must always be revalidated.
           aws s3 sync dist "s3://${WEB_BUCKET}" --delete --exclude index.html \
             --cache-control "public,max-age=31536000,immutable"
+          # The map worker is a module script: it must be served with a JavaScript MIME type.
+          aws s3 cp dist/assets "s3://${WEB_BUCKET}/assets" --recursive --exclude "*" --include "*.mjs" \
+            --content-type "text/javascript" --cache-control "public,max-age=31536000,immutable"
           aws s3 cp dist/index.html "s3://${WEB_BUCKET}/index.html" \
             --cache-control "no-cache" --content-type "text/html"
           aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths "/index.html" "/"

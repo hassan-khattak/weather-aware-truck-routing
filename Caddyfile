@@ -2,6 +2,14 @@
 # so hitting the EC2 address directly never reaches the app.
 {
 	auto_https off
+
+	servers {
+		# Only requests that carry the CloudFront secret header ever reach the proxy (below), and
+		# the security group admits only CloudFront, so trusting the sender's X-Forwarded-For here
+		# is safe. Without this Caddy would replace it with CloudFront's address, and every
+		# visitor would share one rate-limit bucket.
+		trusted_proxies static 0.0.0.0/0 ::/0
+	}
 }
 
 :80 {

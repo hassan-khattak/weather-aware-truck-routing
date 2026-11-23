@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # Only needed for the Swagger UI page at /api/docs/.
@@ -59,6 +60,11 @@ TEMPLATES = [
         "OPTIONS": {"context_processors": []},
     }
 ]
+
+# Security headers on API responses (nosniff, referrer policy and opener policy come from
+# SecurityMiddleware; HSTS and the page CSP are added by CloudFront, which terminates TLS).
+X_FRAME_OPTIONS = "DENY"
+SECURE_REFERRER_POLICY = "same-origin"
 
 ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
