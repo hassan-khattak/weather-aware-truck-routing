@@ -30,6 +30,8 @@ services:
       SECRET_KEY: ${SECRET_KEY:-dev-only-insecure-key}
       ALLOWED_HOSTS: "*"
       TOM_TOM_API_KEY: ${TOM_TOM_API_KEY:-}
+      # `fixtures` replays recorded data for the four sample trips (no API key needed).
+      PROVIDERS_MODE: ${PROVIDERS_MODE:-live}
       DATABASE_URL: postgres://${POSTGRES_USER:-truckroute}:${POSTGRES_PASSWORD:-truckroute}@db:5432/${POSTGRES_DB:-truckroute}
     volumes:
       - ./backend:/app
@@ -46,6 +48,9 @@ services:
 
   frontend:
     build: ./frontend
+    # The node_modules volume outlives the image, so install on every start (a no-op when
+    # nothing changed); otherwise a new dependency breaks `make dev-up` until the volume is reset.
+    command: sh -c "npm install --no-audit --no-fund && npm run dev"
     environment:
       # Same-origin /api in dev, like CloudFront in production.
       API_PROXY_TARGET: http://backend:8000
@@ -55,6 +60,12 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    healthcheck:
+      # So `make dev-up --wait` returns only once the app is really being served.
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:5173/ || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 60
     ports:
       - "5173:5173"
 
