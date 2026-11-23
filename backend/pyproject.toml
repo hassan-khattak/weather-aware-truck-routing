@@ -12,6 +12,8 @@ dependencies = [
     "httpx>=0.28.1",
     "timezonefinder>=9.2.0",
     "tzdata>=2026.6",
+    "drf-spectacular>=0.30.0",
+    "shapely>=2.2.0",
 ]
 
 [dependency-groups]
@@ -28,6 +30,7 @@ dev = [
     "pytest-cov>=7.1.0",
     "hypothesis>=6.170.17",
     "respx>=0.23.1",
+    "time-machine>=3.6.0",
 ]
 
 [tool.pytest.ini_options]
