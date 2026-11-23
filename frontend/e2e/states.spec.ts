@@ -67,6 +67,10 @@ test('going offline shows "can\'t reach the server" with Try again, and recovers
   page,
 }) => {
   await page.goto('/')
+  // Let the map finish loading (its worker included) before the network goes away.
+  await page.waitForFunction(() =>
+    (window as unknown as { __truckMap?: { loaded(): boolean } }).__truckMap?.loaded(),
+  )
   await page.context().setOffline(true)
   await page.getByRole('button', { name: /Chicago → Dallas/ }).click()
   await expect(page.getByRole('alert')).toContainText(/can't reach the server/i)
