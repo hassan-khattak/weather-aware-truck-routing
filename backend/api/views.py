@@ -5,8 +5,14 @@ from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
+from api import clock
 from api.errors import message_error
+from api.rules import get_rules
+from api.validation import parse_routes_request
 from providers.factory import routing_provider
+from trips.payload import routes_payload
+from trips.planner import plan_trip
+from trips.store import save_trip
 
 PLACES_MIN_CHARS = 3
 PLACES_LIMIT = 6
@@ -31,3 +37,17 @@ class PlacesView(APIView):
             raise message_error("q", f"Type at least {PLACES_MIN_CHARS} characters to search.")
         places = routing_provider().search(query, PLACES_LIMIT)
         return Response([{"label": p.label, "lat": p.lat, "lon": p.lon} for p in places])
+
+
+class RoutesView(APIView):
+    """POST /routes: real truck routes with ETAs. The map draws them straight away."""
+
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "routes"
+
+    def post(self, request: Request) -> Response:
+        rules = get_rules()
+        now = clock.now()
+        trip_request = parse_routes_request(request.data, now=now, rules=rules)
+        trip = plan_trip(trip_request, routing_provider(), rules, now)
+        return Response(routes_payload(trip, save_trip(trip), rules))
