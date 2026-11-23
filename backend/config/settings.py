@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.staticfiles",
     "rest_framework",
+    "drf_spectacular",
     "api",
     "places",
     "providers",
@@ -47,6 +48,16 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
+]
+
+# Only needed for the Swagger UI page at /api/docs/.
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {"context_processors": []},
+    }
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -91,6 +102,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [],
     "UNAUTHENTICATED_USER": None,
     "EXCEPTION_HANDLER": "api.errors.exception_handler",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # Per client IP, counted in the Django cache (plan.md section 5.6).
     "DEFAULT_THROTTLE_RATES": {"places": "300/hour", "routes": "30/hour", "risk": "60/hour"},
     # How many proxies sit in front of Django. 0 = trust only the socket address (dev, CI).
@@ -101,3 +113,16 @@ REST_FRAMEWORK = {
 USE_TZ = True
 TIME_ZONE = "UTC"
 STATIC_URL = "static/"
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Weather-Aware Truck Routing API",
+    "DESCRIPTION": (
+        "Two-step API: `POST /routes` returns real truck routes with realistic ETAs (draw them "
+        "straight away); `POST /risk` returns weather risk at every checkpoint, the recommendation "
+        "and a 48-hour heatmap. Errors always use "
+        '`{"error": {"code", "message"}}`.'
+    ),
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}

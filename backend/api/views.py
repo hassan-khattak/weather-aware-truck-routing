@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import serializers
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.request import Request
@@ -10,7 +11,15 @@ from rest_framework.views import APIView
 from api import clock
 from api.errors import TripExpired, message_error
 from api.rules import get_rules
-from api.validation import parse_routes_request
+from api.schemas import (
+    ErrorResponse,
+    HealthResponse,
+    PlaceOut,
+    RiskResponse,
+    RoutesResponse,
+)
+from api.validation import RoutesRequestSerializer, parse_routes_request
+from places.nearest import lookup_town
 from providers.factory import routing_provider, weather_provider
 from trips.payload import routes_payload
 from trips.planner import plan_trip
@@ -23,6 +32,7 @@ PLACES_MIN_CHARS = 3
 PLACES_LIMIT = 6
 
 
+@extend_schema(responses=HealthResponse, tags=["system"])
 @api_view(["GET"])
 @throttle_classes([])
 def health(request: Request) -> Response:
@@ -36,6 +46,16 @@ class PlacesView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "places"
 
+    @extend_schema(
+        parameters=[OpenApiParameter("q", str, description="At least 3 characters", required=True)],
+        responses={
+            200: PlaceOut(many=True),
+            400: ErrorResponse,
+            429: ErrorResponse,
+            503: ErrorResponse,
+        },
+        tags=["search"],
+    )
     def get(self, request: Request) -> Response:
         query = " ".join(request.query_params.get("q", "").split())
         if len(query) < PLACES_MIN_CHARS:
@@ -50,6 +70,17 @@ class RoutesView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "routes"
 
+    @extend_schema(
+        request=RoutesRequestSerializer,
+        responses={
+            200: RoutesResponse,
+            400: ErrorResponse,
+            422: ErrorResponse,
+            429: ErrorResponse,
+            503: ErrorResponse,
+        },
+        tags=["search"],
+    )
     def post(self, request: Request) -> Response:
         rules = get_rules()
         now = clock.now()
@@ -68,6 +99,17 @@ class RiskView(APIView):
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "risk"
 
+    @extend_schema(
+        request=RiskRequestSerializer,
+        responses={
+            200: RiskResponse,
+            400: ErrorResponse,
+            410: ErrorResponse,
+            429: ErrorResponse,
+            503: ErrorResponse,
+        },
+        tags=["search"],
+    )
     def post(self, request: Request) -> Response:
         data = request.data
         if isinstance(data, dict) and set(data) - {"trip_id"}:
@@ -81,4 +123,4 @@ class RiskView(APIView):
 
         rules = get_rules()
         weather = WeatherGridService(weather_provider(), cache, rules, now=clock.now)
-        return Response(risk_payload(assess(trip, weather, rules)))
+        return Response(risk_payload(assess(trip, weather, rules, town_lookup=lookup_town)))

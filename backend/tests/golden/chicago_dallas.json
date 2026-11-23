@@ -1,0 +1,2416 @@
+{
+ "risk": {
+  "heatmap": {
+   "cells": {
+    "chars": 780,
+    "sha256": "c97e2607d7905fea873ec8b373b8682e63599b9dbebae179abea1bcb8f36cd51"
+   },
+   "grid_deg": 0.8,
+   "hours": 49,
+   "layers": {
+    "rain": {
+     "chars": 9540,
+     "sha256": "b7303711b0671ae87404ee0ef2d1f81d89ddf5b0714f9eb0dba050a716f3b5ec"
+    },
+    "risk": {
+     "chars": 4772,
+     "sha256": "9523521554ab981ffbfed3171722fa6e30105c4b18cf6dbbfecccd4d37ae1656"
+    },
+    "snow": {
+     "chars": 9540,
+     "sha256": "37bde5f818345ad193e5548b6f27919cd5148f5ec37d71ea676224bfb26c223b"
+    },
+    "wind": {
+     "chars": 4772,
+     "sha256": "0f2045d774d88c51754a50ef849d9d2abb93970c74d2342fd3cd61e7338d819f"
+    }
+   },
+   "start_utc": "2026-11-24T19:00:00Z"
+  },
+  "recommendation": {
+   "all_clear": true,
+   "all_unsafe": false,
+   "ranking": [
+    "B",
+    "A",
+    "C"
+   ],
+   "reason": "Same risk as Route A; 32 min faster",
+   "route_id": "B"
+  },
+  "routes": [
+   {
+    "checkpoints": [
+     {
+      "eta_utc": "2026-11-24T19:00:00Z",
+      "forecast": true,
+      "gust_mph": 9.6,
+      "idx": 0,
+      "lat": 41.8781,
+      "level": "LOW",
+      "lon": -87.62978,
+      "mile": 0.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "S Federal St",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 4.5
+     },
+     {
+      "eta_utc": "2026-11-24T20:04:01Z",
+      "forecast": true,
+      "gust_mph": 18.3,
+      "idx": 1,
+      "lat": 41.46233,
+      "level": "LOW",
+      "lon": -88.27149,
+      "mile": 50.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.3
+     },
+     {
+      "eta_utc": "2026-11-24T20:50:35Z",
+      "forecast": true,
+      "gust_mph": 25.3,
+      "idx": 2,
+      "lat": 41.2684,
+      "level": "LOW",
+      "lon": -89.08156,
+      "mile": 100.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-39 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 14.4
+     },
+     {
+      "eta_utc": "2026-11-24T21:36:48Z",
+      "forecast": true,
+      "gust_mph": 24.4,
+      "idx": 3,
+      "lat": 40.56498,
+      "level": "LOW",
+      "lon": -89.00274,
+      "mile": 150.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-39 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 14.0
+     },
+     {
+      "eta_utc": "2026-11-24T22:23:00Z",
+      "forecast": true,
+      "gust_mph": 30.4,
+      "idx": 4,
+      "lat": 40.03037,
+      "level": "LOW",
+      "lon": -89.47681,
+      "mile": 200.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-55 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 14.8
+     },
+     {
+      "eta_utc": "2026-11-24T23:09:13Z",
+      "forecast": true,
+      "gust_mph": 28.9,
+      "idx": 5,
+      "lat": 39.36107,
+      "level": "LOW",
+      "lon": -89.64303,
+      "mile": 250.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-55 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 13.7
+     },
+     {
+      "eta_utc": "2026-11-24T23:55:32Z",
+      "forecast": true,
+      "gust_mph": 28.9,
+      "idx": 6,
+      "lat": 38.757,
+      "level": "LOW",
+      "lon": -89.97642,
+      "mile": 300.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-270 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 13.7
+     },
+     {
+      "eta_utc": "2026-11-25T00:42:34Z",
+      "forecast": true,
+      "gust_mph": 24.2,
+      "idx": 7,
+      "lat": 38.80963,
+      "level": "LOW",
+      "lon": -90.87135,
+      "mile": 350.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-70 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 9.2
+     },
+     {
+      "eta_utc": "2026-11-25T01:29:01Z",
+      "forecast": true,
+      "gust_mph": 18.8,
+      "idx": 8,
+      "lat": 38.92086,
+      "level": "LOW",
+      "lon": -91.75774,
+      "mile": 400.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-70 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 10.0
+     },
+     {
+      "eta_utc": "2026-11-25T02:15:28Z",
+      "forecast": true,
+      "gust_mph": 13.2,
+      "idx": 9,
+      "lat": 38.93834,
+      "level": "LOW",
+      "lon": -92.66188,
+      "mile": 450.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-70 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.4
+     },
+     {
+      "eta_utc": "2026-11-25T03:31:55Z",
+      "forecast": true,
+      "gust_mph": 11.0,
+      "idx": 10,
+      "lat": 38.99321,
+      "level": "LOW",
+      "lon": -93.58156,
+      "mile": 500.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-70 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 5.0
+     },
+     {
+      "eta_utc": "2026-11-25T04:18:41Z",
+      "forecast": true,
+      "gust_mph": 8.9,
+      "idx": 11,
+      "lat": 38.94286,
+      "level": "LOW",
+      "lon": -94.3854,
+      "mile": 550.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-470 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 4.3
+     },
+     {
+      "eta_utc": "2026-11-25T05:05:04Z",
+      "forecast": true,
+      "gust_mph": 11.9,
+      "idx": 12,
+      "lat": 38.3805,
+      "level": "LOW",
+      "lon": -94.34433,
+      "mile": 600.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-49 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 2.9
+     },
+     {
+      "eta_utc": "2026-11-25T05:51:17Z",
+      "forecast": true,
+      "gust_mph": 11.9,
+      "idx": 13,
+      "lat": 37.68718,
+      "level": "LOW",
+      "lon": -94.30931,
+      "mile": 650.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-49 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 2.9
+     },
+     {
+      "eta_utc": "2026-11-25T16:38:01Z",
+      "forecast": true,
+      "gust_mph": 17.9,
+      "idx": 14,
+      "lat": 37.05713,
+      "level": "LOW",
+      "lon": -94.44021,
+      "mile": 700.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-44 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 11.7
+     },
+     {
+      "eta_utc": "2026-11-25T17:24:18Z",
+      "forecast": true,
+      "gust_mph": 18.6,
+      "idx": 15,
+      "lat": 36.64368,
+      "level": "LOW",
+      "lon": -95.11832,
+      "mile": 750.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-44 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 9.2
+     },
+     {
+      "eta_utc": "2026-11-25T18:10:43Z",
+      "forecast": true,
+      "gust_mph": 12.1,
+      "idx": 16,
+      "lat": 36.16322,
+      "level": "LOW",
+      "lon": -95.75493,
+      "mile": 800.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-44 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 5.6
+     },
+     {
+      "eta_utc": "2026-11-25T19:07:05Z",
+      "forecast": true,
+      "gust_mph": 13.2,
+      "idx": 17,
+      "lat": 35.60472,
+      "level": "LOW",
+      "lon": -95.96185,
+      "mile": 850.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "US-75 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 5.4
+     },
+     {
+      "eta_utc": "2026-11-25T19:56:51Z",
+      "forecast": true,
+      "gust_mph": 15.4,
+      "idx": 18,
+      "lat": 34.90788,
+      "level": "LOW",
+      "lon": -95.82608,
+      "mile": 900.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "Indian Nation Turnpike S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.9
+     },
+     {
+      "eta_utc": "2026-11-25T20:48:02Z",
+      "forecast": true,
+      "gust_mph": 16.1,
+      "idx": 19,
+      "lat": 34.27999,
+      "level": "LOW",
+      "lon": -96.20076,
+      "mile": 950.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "US-69 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 10.6
+     },
+     {
+      "eta_utc": "2026-11-25T21:38:38Z",
+      "forecast": true,
+      "gust_mph": 15.4,
+      "idx": 20,
+      "lat": 33.67753,
+      "level": "LOW",
+      "lon": -96.60893,
+      "mile": 1000.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "US-75 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.7
+     },
+     {
+      "eta_utc": "2026-11-25T22:27:09Z",
+      "forecast": true,
+      "gust_mph": 18.8,
+      "idx": 21,
+      "lat": 33.07371,
+      "level": "LOW",
+      "lon": -96.82464,
+      "mile": 1050.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "Dallas North Tollway S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.4
+     },
+     {
+      "eta_utc": "2026-11-25T23:01:50Z",
+      "forecast": true,
+      "gust_mph": 17.0,
+      "idx": 22,
+      "lat": 32.77667,
+      "level": "LOW",
+      "lon": -96.79699,
+      "mile": 1071.3,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "Marilla St",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.2
+     }
+    ],
+    "id": "A",
+    "segments": [
+     {
+      "from_mi": 0.0,
+      "level": "LOW",
+      "to_mi": 1071.3
+     }
+    ],
+    "summary": {
+     "avg_risk": 0.0,
+     "miles": {
+      "HIGH": 0.0,
+      "LOW": 1071.3,
+      "MODERATE": 0.0,
+      "NO_FORECAST": 0.0,
+      "NO_TRAVEL": 0.0,
+      "SEVERE": 0.0
+     }
+    }
+   },
+   {
+    "checkpoints": [
+     {
+      "eta_utc": "2026-11-24T19:00:00Z",
+      "forecast": true,
+      "gust_mph": 9.6,
+      "idx": 0,
+      "lat": 41.8781,
+      "level": "LOW",
+      "lon": -87.62978,
+      "mile": 0.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "S Federal St",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 4.5
+     },
+     {
+      "eta_utc": "2026-11-24T20:05:06Z",
+      "forecast": true,
+      "gust_mph": 18.1,
+      "idx": 1,
+      "lat": 41.23881,
+      "level": "LOW",
+      "lon": -87.64197,
+      "mile": 50.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "IL-394 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 10.4
+     },
+     {
+      "eta_utc": "2026-11-24T21:01:29Z",
+      "forecast": true,
+      "gust_mph": 24.2,
+      "idx": 2,
+      "lat": 40.69934,
+      "level": "LOW",
+      "lon": -88.02777,
+      "mile": 100.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 13.6
+     },
+     {
+      "eta_utc": "2026-11-24T21:47:47Z",
+      "forecast": true,
+      "gust_mph": 23.7,
+      "idx": 3,
+      "lat": 40.03303,
+      "level": "LOW",
+      "lon": -88.30366,
+      "mile": 150.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 13.4
+     },
+     {
+      "eta_utc": "2026-11-24T22:34:05Z",
+      "forecast": true,
+      "gust_mph": 28.9,
+      "idx": 4,
+      "lat": 39.3591,
+      "level": "LOW",
+      "lon": -88.42035,
+      "mile": 200.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 12.7
+     },
+     {
+      "eta_utc": "2026-11-24T23:21:11Z",
+      "forecast": true,
+      "gust_mph": 30.2,
+      "idx": 5,
+      "lat": 38.7781,
+      "level": "LOW",
+      "lon": -88.87367,
+      "mile": 250.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 13.1
+     },
+     {
+      "eta_utc": "2026-11-25T00:08:39Z",
+      "forecast": true,
+      "gust_mph": 30.4,
+      "idx": 6,
+      "lat": 38.09949,
+      "level": "LOW",
+      "lon": -88.91192,
+      "mile": 300.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 12.5
+     },
+     {
+      "eta_utc": "2026-11-25T00:55:06Z",
+      "forecast": true,
+      "gust_mph": 31.8,
+      "idx": 7,
+      "lat": 37.43307,
+      "level": "LOW",
+      "lon": -89.15273,
+      "mile": 350.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 15.2
+     },
+     {
+      "eta_utc": "2026-11-25T01:41:32Z",
+      "forecast": true,
+      "gust_mph": 26.8,
+      "idx": 8,
+      "lat": 36.87846,
+      "level": "LOW",
+      "lon": -89.51964,
+      "mile": 400.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-57 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 11.4
+     },
+     {
+      "eta_utc": "2026-11-25T02:28:07Z",
+      "forecast": true,
+      "gust_mph": 32.7,
+      "idx": 9,
+      "lat": 36.20732,
+      "level": "LOW",
+      "lon": -89.73831,
+      "mile": 450.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-155 E",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 16.6
+     },
+     {
+      "eta_utc": "2026-11-25T03:46:29Z",
+      "forecast": true,
+      "gust_mph": 26.2,
+      "idx": 10,
+      "lat": 35.77988,
+      "level": "LOW",
+      "lon": -89.13935,
+      "mile": 500.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "US-412 E",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 13.9
+     },
+     {
+      "eta_utc": "2026-11-25T04:35:10Z",
+      "forecast": true,
+      "gust_mph": 24.6,
+      "idx": 11,
+      "lat": 35.42996,
+      "level": "LOW",
+      "lon": -89.35107,
+      "mile": 550.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-40 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 10.6
+     },
+     {
+      "eta_utc": "2026-11-25T05:23:08Z",
+      "forecast": true,
+      "gust_mph": 24.8,
+      "idx": 12,
+      "lat": 35.15315,
+      "level": "LOW",
+      "lon": -90.06993,
+      "mile": 600.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-40 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 11.5
+     },
+     {
+      "eta_utc": "2026-11-25T06:09:39Z",
+      "forecast": true,
+      "gust_mph": 31.8,
+      "idx": 13,
+      "lat": 34.9904,
+      "level": "LOW",
+      "lon": -90.88903,
+      "mile": 650.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-40 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 15.1
+     },
+     {
+      "eta_utc": "2026-11-25T16:55:58Z",
+      "forecast": true,
+      "gust_mph": 20.1,
+      "idx": 14,
+      "lat": 34.80279,
+      "level": "LOW",
+      "lon": -91.72266,
+      "mile": 700.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-40 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 12.2
+     },
+     {
+      "eta_utc": "2026-11-25T17:42:33Z",
+      "forecast": true,
+      "gust_mph": 17.2,
+      "idx": 15,
+      "lat": 34.61788,
+      "level": "LOW",
+      "lon": -92.50037,
+      "mile": 750.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-440 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.7
+     },
+     {
+      "eta_utc": "2026-11-25T18:28:57Z",
+      "forecast": true,
+      "gust_mph": 13.6,
+      "idx": 16,
+      "lat": 34.11742,
+      "level": "LOW",
+      "lon": -93.09371,
+      "mile": 800.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-440 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 5.3
+     },
+     {
+      "eta_utc": "2026-11-25T19:15:20Z",
+      "forecast": true,
+      "gust_mph": 15.9,
+      "idx": 17,
+      "lat": 33.63214,
+      "level": "LOW",
+      "lon": -93.72124,
+      "mile": 850.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-440 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.8
+     },
+     {
+      "eta_utc": "2026-11-25T20:01:44Z",
+      "forecast": true,
+      "gust_mph": 16.6,
+      "idx": 18,
+      "lat": 33.45116,
+      "level": "LOW",
+      "lon": -94.50152,
+      "mile": 900.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-440 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.2
+     },
+     {
+      "eta_utc": "2026-11-25T20:48:08Z",
+      "forecast": true,
+      "gust_mph": 17.9,
+      "idx": 19,
+      "lat": 33.16288,
+      "level": "LOW",
+      "lon": -95.24769,
+      "mile": 950.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-440 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.8
+     },
+     {
+      "eta_utc": "2026-11-25T21:34:32Z",
+      "forecast": true,
+      "gust_mph": 18.3,
+      "idx": 20,
+      "lat": 33.1269,
+      "level": "LOW",
+      "lon": -96.08382,
+      "mile": 1000.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-440 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 10.6
+     },
+     {
+      "eta_utc": "2026-11-25T22:29:26Z",
+      "forecast": true,
+      "gust_mph": 18.8,
+      "idx": 21,
+      "lat": 32.77667,
+      "level": "LOW",
+      "lon": -96.79699,
+      "mile": 1049.7,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "Marilla St",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.4
+     }
+    ],
+    "id": "B",
+    "segments": [
+     {
+      "from_mi": 0.0,
+      "level": "LOW",
+      "to_mi": 1049.7
+     }
+    ],
+    "summary": {
+     "avg_risk": 0.0,
+     "miles": {
+      "HIGH": 0.0,
+      "LOW": 1049.7,
+      "MODERATE": 0.0,
+      "NO_FORECAST": 0.0,
+      "NO_TRAVEL": 0.0,
+      "SEVERE": 0.0
+     }
+    }
+   },
+   {
+    "checkpoints": [
+     {
+      "eta_utc": "2026-11-24T19:00:00Z",
+      "forecast": true,
+      "gust_mph": 9.6,
+      "idx": 0,
+      "lat": 41.8781,
+      "level": "LOW",
+      "lon": -87.62978,
+      "mile": 0.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "S Federal St",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 4.5
+     },
+     {
+      "eta_utc": "2026-11-24T19:51:12Z",
+      "forecast": true,
+      "gust_mph": 24.8,
+      "idx": 1,
+      "lat": 41.85769,
+      "level": "LOW",
+      "lon": -88.53153,
+      "mile": 50.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-88 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 14.2
+     },
+     {
+      "eta_utc": "2026-11-24T20:37:19Z",
+      "forecast": true,
+      "gust_mph": 29.5,
+      "idx": 2,
+      "lat": 41.8224,
+      "level": "LOW",
+      "lon": -89.46023,
+      "mile": 100.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-88 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 12.7
+     },
+     {
+      "eta_utc": "2026-11-24T21:23:27Z",
+      "forecast": true,
+      "gust_mph": 29.5,
+      "idx": 3,
+      "lat": 41.54378,
+      "level": "LOW",
+      "lon": -90.26246,
+      "mile": 150.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-88 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 12.7
+     },
+     {
+      "eta_utc": "2026-11-24T22:09:47Z",
+      "forecast": true,
+      "gust_mph": 18.3,
+      "idx": 4,
+      "lat": 41.64778,
+      "level": "LOW",
+      "lon": -91.16858,
+      "mile": 200.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 9.0
+     },
+     {
+      "eta_utc": "2026-11-24T22:55:55Z",
+      "forecast": true,
+      "gust_mph": 22.6,
+      "idx": 5,
+      "lat": 41.69407,
+      "level": "LOW",
+      "lon": -92.12453,
+      "mile": 250.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 12.3
+     },
+     {
+      "eta_utc": "2026-11-24T23:42:04Z",
+      "forecast": true,
+      "gust_mph": 25.1,
+      "idx": 6,
+      "lat": 41.68196,
+      "level": "LOW",
+      "lon": -93.08947,
+      "mile": 300.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 10.9
+     },
+     {
+      "eta_utc": "2026-11-25T00:28:21Z",
+      "forecast": true,
+      "gust_mph": 13.9,
+      "idx": 7,
+      "lat": 41.54622,
+      "level": "LOW",
+      "lon": -93.9614,
+      "mile": 350.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.1
+     },
+     {
+      "eta_utc": "2026-11-25T01:14:30Z",
+      "forecast": true,
+      "gust_mph": 20.6,
+      "idx": 8,
+      "lat": 41.49732,
+      "level": "LOW",
+      "lon": -94.90669,
+      "mile": 400.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.9
+     },
+     {
+      "eta_utc": "2026-11-25T02:00:39Z",
+      "forecast": true,
+      "gust_mph": 16.3,
+      "idx": 9,
+      "lat": 41.32875,
+      "level": "LOW",
+      "lon": -95.74448,
+      "mile": 450.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-80 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.1
+     },
+     {
+      "eta_utc": "2026-11-25T02:46:53Z",
+      "forecast": true,
+      "gust_mph": 16.3,
+      "idx": 10,
+      "lat": 40.65454,
+      "level": "LOW",
+      "lon": -95.75216,
+      "mile": 500.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-29 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.1
+     },
+     {
+      "eta_utc": "2026-11-25T04:03:01Z",
+      "forecast": true,
+      "gust_mph": 12.3,
+      "idx": 11,
+      "lat": 40.09566,
+      "level": "LOW",
+      "lon": -95.21344,
+      "mile": 550.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-29 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.1
+     },
+     {
+      "eta_utc": "2026-11-25T04:49:09Z",
+      "forecast": true,
+      "gust_mph": 12.3,
+      "idx": 12,
+      "lat": 39.53423,
+      "level": "LOW",
+      "lon": -94.78748,
+      "mile": 600.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-29 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.1
+     },
+     {
+      "eta_utc": "2026-11-25T05:35:19Z",
+      "forecast": true,
+      "gust_mph": 9.4,
+      "idx": 13,
+      "lat": 39.02395,
+      "level": "LOW",
+      "lon": -95.12844,
+      "mile": 650.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-70 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.6
+     },
+     {
+      "eta_utc": "2026-11-25T06:21:27Z",
+      "forecast": true,
+      "gust_mph": 10.7,
+      "idx": 14,
+      "lat": 38.80039,
+      "level": "LOW",
+      "lon": -95.90461,
+      "mile": 700.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-470 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.3
+     },
+     {
+      "eta_utc": "2026-11-25T17:07:34Z",
+      "forecast": true,
+      "gust_mph": 14.5,
+      "idx": 15,
+      "lat": 38.2186,
+      "level": "LOW",
+      "lon": -96.43269,
+      "mile": 750.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-470 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.0
+     },
+     {
+      "eta_utc": "2026-11-25T17:53:42Z",
+      "forecast": true,
+      "gust_mph": 12.8,
+      "idx": 16,
+      "lat": 37.73334,
+      "level": "LOW",
+      "lon": -97.07932,
+      "mile": 800.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-470 W",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 5.6
+     },
+     {
+      "eta_utc": "2026-11-25T18:39:49Z",
+      "forecast": true,
+      "gust_mph": 14.1,
+      "idx": 17,
+      "lat": 37.12758,
+      "level": "LOW",
+      "lon": -97.33894,
+      "mile": 850.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.7
+     },
+     {
+      "eta_utc": "2026-11-25T19:25:56Z",
+      "forecast": true,
+      "gust_mph": 16.1,
+      "idx": 18,
+      "lat": 36.40802,
+      "level": "LOW",
+      "lon": -97.32719,
+      "mile": 900.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.1
+     },
+     {
+      "eta_utc": "2026-11-25T20:12:04Z",
+      "forecast": true,
+      "gust_mph": 17.0,
+      "idx": 19,
+      "lat": 35.70074,
+      "level": "LOW",
+      "lon": -97.41636,
+      "mile": 950.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.7
+     },
+     {
+      "eta_utc": "2026-11-25T20:58:37Z",
+      "forecast": true,
+      "gust_mph": 15.9,
+      "idx": 20,
+      "lat": 35.03653,
+      "level": "LOW",
+      "lon": -97.37626,
+      "mile": 1000.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 8.0
+     },
+     {
+      "eta_utc": "2026-11-25T21:45:07Z",
+      "forecast": true,
+      "gust_mph": 15.4,
+      "idx": 21,
+      "lat": 34.35974,
+      "level": "LOW",
+      "lon": -97.14871,
+      "mile": 1050.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.7
+     },
+     {
+      "eta_utc": "2026-11-25T22:31:37Z",
+      "forecast": true,
+      "gust_mph": 14.5,
+      "idx": 22,
+      "lat": 33.65312,
+      "level": "LOW",
+      "lon": -97.15534,
+      "mile": 1100.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35 S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 6.3
+     },
+     {
+      "eta_utc": "2026-11-25T23:18:07Z",
+      "forecast": true,
+      "gust_mph": 17.0,
+      "idx": 23,
+      "lat": 33.00879,
+      "level": "LOW",
+      "lon": -96.975,
+      "mile": 1150.0,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "I-35E S",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.2
+     },
+     {
+      "eta_utc": "2026-11-25T23:55:06Z",
+      "forecast": true,
+      "gust_mph": 17.0,
+      "idx": 24,
+      "lat": 32.77667,
+      "level": "LOW",
+      "lon": -96.79699,
+      "mile": 1171.3,
+      "rain_in_hr": 0.0,
+      "reasons": [],
+      "road": "Marilla St",
+      "snow_in_hr": 0.0,
+      "town": null,
+      "town_dir": null,
+      "town_dist_mi": null,
+      "tz": "America/Chicago",
+      "wind_mph": 7.2
+     }
+    ],
+    "id": "C",
+    "segments": [
+     {
+      "from_mi": 0.0,
+      "level": "LOW",
+      "to_mi": 1171.3
+     }
+    ],
+    "summary": {
+     "avg_risk": 0.0,
+     "miles": {
+      "HIGH": 0.0,
+      "LOW": 1171.3,
+      "MODERATE": 0.0,
+      "NO_FORECAST": 0.0,
+      "NO_TRAVEL": 0.0,
+      "SEVERE": 0.0
+     }
+    }
+   }
+  ],
+  "stale": false,
+  "weather_as_of": "2026-11-24T18:00:00Z"
+ },
+ "routes": {
+  "departure": {
+   "local": "2026-11-24T13:00",
+   "tz": "America/Chicago",
+   "utc": "2026-11-24T19:00:00Z"
+  },
+  "interval_mi": 50.0,
+  "notes": [],
+  "routes": [
+   {
+    "distance_mi": 1071.3,
+    "drive_s": 63110,
+    "geometry": "cir~FbezuOhGp{@nf@fb@tjCiFdmIhka@~kDtoD`W~_A|ZxiIzqBjaFxgBt`HzqK`dWn^pk@prPuTrzAzYddFG~XvyB||BfsDxQntHl_CntC~TdvItQfw@|dDn{Et_IzxPf\\jqn@}Jl_UzHr}G`k@~yBhD|ue@`jJr{CzrJ{\\fzZkTvf@}d@jl@eH`cG{Ipd@eg@xv@aPpzYr@bf@c^jMqx@~d@ib@hz^qOtwAm\\|xCsBtk@sSh}@opB|oI{j@dmLtQxYbo@rCv~@be@tc@~hL~RrdB}o@hl@zH|wC`|Cp|Arw@~j@jgBdu@taApqDhtCx{AteDboBpxBnuAjv@h_AnaCdlBj~BldDboBje@bmB|o@lfAb}FrfHptAzx@~`@xbEtFlnLr^vn@hcMkEjx@|^j}B|_CbzFb}DrvAruCx_Bx^bl@pd@bcDbbD|yA~qC`yAjRrtCpcC~|@tuAbbExFr_LsUhjH~hAxk@`Mf]nn@pbAzpDxq@fEniFeLzvC|`@tzsA{e@vsBrx@pfU~_OxwCvnCplG_CzjBk`@bkHdGfgFxoHttDppDxyOtvJtlJvhBzg@bZc[||JcD~xTgs@rdF~AhzBz\\`nByg@t}DiZfxTa}@ftMta@pvBp}BhsGfb@xd@soCjjKkpA|}CchAroIm\\pvNkP`vc@mZb~Blc@drBYty@u_DzdUpMnqF~v@lvIaHbzLuv@tcEsdBloC}NjnG}xBdeJeL|`D{xAluF{qB`rL{a@paLltApxOo~AneE}WjtMyzC||QhM`aBoh@voEcIpeL_p@|zDoJ|g`@{[dtF}T~xTid@|sBsDn{BlXxkDaa@flEsUvxUv[loBruDvfHni@r_kA_B|{@gdAl~AoLxw@{rA|~e@}s@dhEm|@rkl@_t@pzGgh@~xNb[`rG{XdyMal@liCkcA|_dAyz@zvT{}Bv{^fjJi\\fkEb^lc@nd@jcAdkHqW~yQhz@pdBt`DiWfdKja@|yAar@feBg|BvjGibAj{CmpBrgGswFbyBijAjoAavBj`@ucEd}A}l@`jAkbAjcBwTlpQjVtwAs~@zvRzHb_BeOzdBrWd_LsCdqAbiA`cH`M|uAsr@biKxWvuL{`@vmIze@dTbt@juAra@h|Rv@jrCizCtcIfA|sCceErv@aRd}A|Pp`JrBtpB{c@t_OdDviFm~ArmXbm@jfWlBliCiu@`qAl|@fdF`StdMaNrk@lQbVllD|pChAcJhlEbLzz@vpBt}ElcCnnD`fBjDzjDy~AxfEtGhdBjeG|RrlEn}AntCvtBxaCljAlwKvWdx@`rIf{LvuC`_OhcD|vJhrAt_Ah_Y|dKboAd~@n`M|`b@zgE`zGp~ApcF|dAvlA`gInhFbaHxnIdgJ|jQvyPtwOzbBvxH`tG|dRnuJfeKlnH~lJhcBzBvWnw@jPriPx}KhlQzP~t@fJrkLfi@v_@zlE@pzCr[jvSfBd~AzW~{Z_EluEavAxeA{dA`eB_l@bqBesBhrIqVf{DdGfrGy|@~zKf_@|qAhp@f}A_L`uAti@frCn_@fhJsnB|jFbDtsGcdBtxEc{BdzGjDpgFsqAlmEyjBh{CmJ`|Cuz@rcGzVdwWcjJlrF{d@`g@cYlo@`HdwMvlKdjGniBxyAOp}DflAlbBjhC|nDp_Al_FpcD`fC`iAx|DfxEbyIjnD`}D~i@zvBlaB~jB|i@t~Gf`IjyAxc@~aK`iFviD`cDpv\\~qMvjIbbK|tE`dDphC`cDzvHrhEbiEhEnk@lUfiArgArvBnzDhvFfhHxvCxU`vCn`C|zAzCbd@vc@tlAxzErb@dg@~{ApQtoHRroFdnCv_EzS|yAp[dyJ}uAd{NfmBl_B{EfsMonFluChAvsIby@~iI~WpqDrrEp{D~y@xwFhRrwA`f@~}K``a@pdFtu@ttMqGpa@ee@bwGiFrcFolAxzNfx@bo@oEtjA}z@bwAk]vFya@",
+    "id": "A",
+    "long_range_forecast": false,
+    "order": 0,
+    "source": "api",
+    "stops": [
+     {
+      "duration_s": 1800,
+      "mile": 497.9,
+      "start_utc": "2026-11-25T03:00:00Z",
+      "type": "break"
+     },
+     {
+      "duration_s": 36000,
+      "mile": 691.5,
+      "start_utc": "2026-11-25T06:30:00Z",
+      "type": "rest"
+     }
+    ],
+    "timeline": [
+     [
+      0,
+      0.0
+     ],
+     [
+      42,
+      0.1
+     ],
+     [
+      228,
+      0.6
+     ],
+     [
+      260,
+      0.8
+     ],
+     [
+      323,
+      1.3
+     ],
+     [
+      333,
+      1.4
+     ],
+     [
+      402,
+      2.3
+     ],
+     [
+      448,
+      2.9
+     ],
+     [
+      484,
+      3.4
+     ],
+     [
+      488,
+      3.5
+     ],
+     [
+      2160,
+      31.3
+     ],
+     [
+      2188,
+      31.7
+     ],
+     [
+      2225,
+      31.9
+     ],
+     [
+      2969,
+      38.8
+     ],
+     [
+      3366,
+      41.7
+     ],
+     [
+      3395,
+      42.0
+     ],
+     [
+      6263,
+      93.6
+     ],
+     [
+      6306,
+      94.1
+     ],
+     [
+      6310,
+      94.1
+     ],
+     [
+      6329,
+      94.5
+     ],
+     [
+      9951,
+      159.8
+     ],
+     [
+      9969,
+      160.1
+     ],
+     [
+      13525,
+      224.2
+     ],
+     [
+      13543,
+      224.6
+     ],
+     [
+      17544,
+      296.7
+     ],
+     [
+      17569,
+      297.1
+     ],
+     [
+      19190,
+      325.7
+     ],
+     [
+      19232,
+      326.4
+     ],
+     [
+      19267,
+      326.9
+     ],
+     [
+      19418,
+      329.6
+     ],
+     [
+      19436,
+      329.9
+     ],
+     [
+      28800,
+      497.9
+     ],
+     [
+      30600,
+      497.9
+     ],
+     [
+      33099,
+      542.8
+     ],
+     [
+      33137,
+      543.2
+     ],
+     [
+      33157,
+      543.5
+     ],
+     [
+      33176,
+      543.8
+     ],
+     [
+      33994,
+      558.5
+     ],
+     [
+      34003,
+      558.6
+     ],
+     [
+      34035,
+      559.1
+     ],
+     [
+      34043,
+      559.2
+     ],
+     [
+      34054,
+      559.4
+     ],
+     [
+      41155,
+      687.5
+     ],
+     [
+      41175,
+      687.7
+     ],
+     [
+      41198,
+      687.9
+     ],
+     [
+      41400,
+      691.5
+     ],
+     [
+      77400,
+      691.5
+     ],
+     [
+      77879,
+      700.0
+     ],
+     [
+      77899,
+      700.2
+     ],
+     [
+      78517,
+      711.4
+     ],
+     [
+      78535,
+      711.7
+     ],
+     [
+      80974,
+      755.7
+     ],
+     [
+      83380,
+      799.1
+     ],
+     [
+      83458,
+      800.2
+     ],
+     [
+      83479,
+      800.5
+     ],
+     [
+      83692,
+      804.1
+     ],
+     [
+      83710,
+      804.5
+     ],
+     [
+      84349,
+      815.9
+     ],
+     [
+      84357,
+      816.0
+     ],
+     [
+      84496,
+      817.2
+     ],
+     [
+      84515,
+      817.5
+     ],
+     [
+      87712,
+      862.5
+     ],
+     [
+      87732,
+      862.7
+     ],
+     [
+      88365,
+      873.9
+     ],
+     [
+      88405,
+      874.7
+     ],
+     [
+      90010,
+      903.6
+     ],
+     [
+      94954,
+      983.5
+     ],
+     [
+      94973,
+      983.8
+     ],
+     [
+      98092,
+      1037.2
+     ],
+     [
+      98439,
+      1043.3
+     ],
+     [
+      98697,
+      1048.0
+     ],
+     [
+      98733,
+      1048.5
+     ],
+     [
+      99015,
+      1052.8
+     ],
+     [
+      99228,
+      1056.4
+     ],
+     [
+      100376,
+      1069.9
+     ],
+     [
+      100466,
+      1070.2
+     ],
+     [
+      100792,
+      1071.0
+     ],
+     [
+      100844,
+      1071.1
+     ],
+     [
+      100882,
+      1071.3
+     ],
+     [
+      100886,
+      1071.3
+     ],
+     [
+      100910,
+      1071.3
+     ]
+    ],
+    "total_s": 100910
+   },
+   {
+    "distance_mi": 1049.7,
+    "drive_s": 61166,
+    "geometry": "cir~FbezuOhGp{@nf@fb@d|AqAnl@cF~Qyw@dj@{R~kJ^fh@c]phIwKti@sShBiaCd]yn@`nCjw@`m@I|jDuaC|v@gMz~DhFvxAzWdkJgFjh@iY|j@ujB~}A{P~RzsBjiNv@hh@l\\|sAx|EbrA`x@hoC{[jqI{CjbBXrg@~ZvsHjIpkAhbFhzLoE`^bn@vvDtV`Br}Frn@tgBtBhnSrcDuItl@`N|a@fh@r[z|Dv^zl@neVhrGtkCxTl}AdjCjhE|sBvlBdsBvvChT`f@l`@jr@pFd`E?npAxq@nwFnApqBzpB|o@~RpyBqDbxAtj@xuEbBhhDb[jrBruBjl@rM~qG~Er|CpcClrCb_@xtFrnC`_DzKdzKp{DfuH|jFdo@|PlzG~DrnGpoB`zHdtHbpGfsHxj@pSvge@eMfj@cUn}CqeE~aVyR|cDpyCbn@lUd}WxG~sElsBf~J|E`aBno@fgFKjh@~`@rjGpqKhh@|Z|yRz|G`kEl{Cn~Fb~AtfBtO|gCnjBncGv_@ff@zc@vl@vmFd_AptAzyDp~@fe@~`@peRvy@ve@vc@vy@d~Bf{Er~Dl|Bz{Cd{CfxFndD|zDz|Cz|EhzBdaBvnBzqDx{Bx_CxmB~aFlxExfE|aIjtJbm@xNx~IsBz{Fwm@lmIe@jlCq^~tFrAfxFe{@|`Ms@boCni@tq@eEdxJuwCtwAomClnCoO|uCz]j~Asg@t_BxL|zAfk@l~KuItfEplAlgHrMjcCju@tyFt@jbCdcAhwEiBb{AqWpkSpVrjFfnAvqBKf}Bth@xmCfHxzGh|AfgCnqAv~Dhk@toLxgQr~D|vDzwGfiD|}AxSlpFrEnxc@vHbnD`_@daIrnCz_HbWvlF~lBbwEvgDdsOfgRbPnu@yAhwQxjE|kQd|PqAjhC`f@~vT|DduO~jG|cHb|Bh{OtyNziHjtBvwNwBxvGb_DdkDdk@psAvnAzvAe}AvfBguDthD}iDb}CcwHvcEu|B`_@gg@lsB_vOzm@_mKvO}oShrAco@ffK`d@r|AeKdrBqjBjpLeqP|zLefL`f@e]x`BuG`g@_d@ltAkxCnbDooCz_B_dE`mCyxC~jFwoPhh@kqMja@od@p|@rz@`xFdeXt~A|sFlhJvkd@vWho@zoItkBlp@~t@rrNhfXtkCb}J`yEbxMrhIbgNnqNfd\\lzFreQtw@~{AqRjr@mpEbbDaPnr@vO~oBgPdqHzEd|Bth@rZ|wDvQr`@be@eh@faS~GvpBuaBjuG|pCvvNoUvtWriBzjGjSzsLtjGf|Wr{IdoPw_@t~EjRx`Fn`EtlIj}C~kKt[bqEtyF|{Xz`@xtErdBzoIpi@`xIfbEnoHhs@pgEvsAr_Ezd@teG_Bd{GdbAjgH|eBtcHzKn`Zj{A`iFkAjuEzZjhGsGzkJq^rqFjStkZ|v@`aF~~@n{TroF~\\jdDx}B`Q`fOpx@h{CjuCfeCrJvsFd~A|sGh_BzeChrHrxXfhFtpJ~dBhxB~_@xgBbRheD|mHljGvlJpmMfyCvsCh{BpfEtpBbtBjpDzkHrhB~nBddGj~DjrIvyIp_GtnIx`H~gAv`Sr~Jp`NleNtyi@rky@dqCflGtaIf`MdxEbdQ||@hvJveAn}A``@phBhzAbeBh{EnxDrcCveIv|HdmK`dA~_InMzdDbeBjjGk]|uHkr@h}EgUxkHap@rrD|o@`xMin@rbSvhFzfO`lHruKfjBtdExoMzoPdr@hnJ|_@lkBfnI|~PvuCntCnz@twA~yA~|Ej}CbnOy[`}XrTliDyStvBuZzaTnEliKnqBzwJk@dlObQ`wChRhu@xhCvoBjUfp@cZl{GfGnkN_o@b}DmYxmFzKdvKiPphRdR`sD}i@~yPrwAxoC|a@re@tdBv^`qAtqCzyEjpGb{D|sDh~E``KhUd~@fIbvDxz@f`DnvAdxCzsD~jF`aBx~IvkAvqAjjEpjNh{@~yAzxCnqJxmExkK~e@b{CvQzvIpzAbyDi@hgA",
+    "id": "B",
+    "long_range_forecast": false,
+    "order": 1,
+    "source": "api",
+    "stops": [
+     {
+      "duration_s": 1800,
+      "mile": 483.7,
+      "start_utc": "2026-11-25T03:00:00Z",
+      "type": "break"
+     },
+     {
+      "duration_s": 36000,
+      "mile": 672.0,
+      "start_utc": "2026-11-25T06:30:00Z",
+      "type": "rest"
+     }
+    ],
+    "timeline": [
+     [
+      0,
+      0.0
+     ],
+     [
+      42,
+      0.1
+     ],
+     [
+      228,
+      0.6
+     ],
+     [
+      260,
+      0.8
+     ],
+     [
+      323,
+      1.3
+     ],
+     [
+      333,
+      1.4
+     ],
+     [
+      402,
+      2.3
+     ],
+     [
+      489,
+      3.5
+     ],
+     [
+      509,
+      3.8
+     ],
+     [
+      836,
+      8.2
+     ],
+     [
+      855,
+      8.5
+     ],
+     [
+      1089,
+      12.3
+     ],
+     [
+      1108,
+      12.6
+     ],
+     [
+      1743,
+      23.0
+     ],
+     [
+      1771,
+      23.5
+     ],
+     [
+      1790,
+      23.8
+     ],
+     [
+      1957,
+      26.6
+     ],
+     [
+      1983,
+      26.8
+     ],
+     [
+      2171,
+      28.4
+     ],
+     [
+      2304,
+      29.6
+     ],
+     [
+      2397,
+      30.6
+     ],
+     [
+      2428,
+      30.9
+     ],
+     [
+      2447,
+      31.2
+     ],
+     [
+      3946,
+      50.5
+     ],
+     [
+      4064,
+      51.4
+     ],
+     [
+      4091,
+      51.5
+     ],
+     [
+      4696,
+      57.8
+     ],
+     [
+      4719,
+      58.0
+     ],
+     [
+      5552,
+      69.1
+     ],
+     [
+      5582,
+      69.3
+     ],
+     [
+      5585,
+      69.3
+     ],
+     [
+      14091,
+      222.4
+     ],
+     [
+      14109,
+      222.7
+     ],
+     [
+      17847,
+      287.9
+     ],
+     [
+      17866,
+      288.3
+     ],
+     [
+      24157,
+      401.2
+     ],
+     [
+      24200,
+      401.6
+     ],
+     [
+      24219,
+      401.9
+     ],
+     [
+      26852,
+      449.4
+     ],
+     [
+      26898,
+      450.2
+     ],
+     [
+      28315,
+      475.7
+     ],
+     [
+      28800,
+      483.7
+     ],
+     [
+      30600,
+      483.7
+     ],
+     [
+      32705,
+      518.4
+     ],
+     [
+      32735,
+      518.6
+     ],
+     [
+      32738,
+      518.7
+     ],
+     [
+      36568,
+      586.4
+     ],
+     [
+      36577,
+      586.5
+     ],
+     [
+      36597,
+      586.8
+     ],
+     [
+      37094,
+      595.1
+     ],
+     [
+      37247,
+      597.6
+     ],
+     [
+      37265,
+      597.9
+     ],
+     [
+      37656,
+      604.6
+     ],
+     [
+      37674,
+      604.9
+     ],
+     [
+      37848,
+      608.1
+     ],
+     [
+      37867,
+      608.4
+     ],
+     [
+      41400,
+      672.0
+     ],
+     [
+      77400,
+      672.0
+     ],
+     [
+      80370,
+      725.4
+     ],
+     [
+      80382,
+      725.6
+     ],
+     [
+      80441,
+      726.4
+     ],
+     [
+      80445,
+      726.5
+     ],
+     [
+      80947,
+      735.5
+     ],
+     [
+      97896,
+      1039.9
+     ],
+     [
+      97914,
+      1040.3
+     ],
+     [
+      98095,
+      1043.5
+     ],
+     [
+      98346,
+      1045.7
+     ],
+     [
+      98678,
+      1048.3
+     ],
+     [
+      98781,
+      1048.9
+     ],
+     [
+      98822,
+      1049.2
+     ],
+     [
+      98836,
+      1049.3
+     ],
+     [
+      98894,
+      1049.6
+     ],
+     [
+      98907,
+      1049.6
+     ],
+     [
+      98966,
+      1049.7
+     ]
+    ],
+    "total_s": 98966
+   },
+   {
+    "distance_mi": 1171.3,
+    "drive_s": 66306,
+    "geometry": "cir~FbezuOvj@vwZqOxfGzWvhMsWnvBtThx@jlCxcDh[~xFzpA|hFnzBfwAdCriGlU|u@w@rlPx_A~y\\`EriJyo@fgGk}AvhEkFn|@miCtpCmfA`uByhCt}Q_vCt`FuM|z@zBdtLeTdfGnS|sClFba^ie@pzDt^vxP~dAbqDb|@hfGb~C`|NxzBrlIb_AbyBpBnl^n_@nuBxjCtiHv{AduCduAfsIzBn`Cr|ApfDZbdSolAheGaHhhHbmAjuBvuCr}HpC~gErxBjzN~Vn{D~xAx_DlT|~Fb`AjtAzyAfw@pbBl`BxwBzaE~k@vVnlCaMnkAfnAhuFleIrdAxpIc`@tpDggBtFqh@jY_cA~{A}cBh|@s^d_AmRt`EvQn|Zqz@pgVVftHksDhgWiA~x`@}_AblIuV~jQav@v~Coh@hlGo\\hkd@{tBdmK~DfhLmr@fhGaGzxVtm@vrIfCtxb@m@f|New@daZ`F~ubC`kAn|FpQztGwVp_U|IjeM{TpeFeuAdtFjeBvbQjUvxT|kBpwMfDdfEr`AliM{C`{a@hUht@nq@pJvbGGfb@le@hAhjCnTd~@tfCvgGfdCjqSvl@|lKtkBblGnSjeCo@bnQdU~w@joBrmChPbqBaSjk_ArUxpG?rdJkVpoEyRrb~CvK|bLvyDfgAr`Db{Alp@heBfqC~}CleBxdBdcBbh@leEhoEhXjxBb_A`xA~bCvhCp`Fb}CpsCroCp`AxsAhj@fWbI~y@bq@_IjlA_kArn@kAjzL}OzbGvaAbmCos@dnEi_@f`IqiBfeCaGruMSpvEng@pbMhKfnCfz@vsDBnrOarMdyBaqEnpBq_DnjAqeAt`Ag{BzhL}qHdnJwpBdqBaqAhwK{wErtEk|EbkFykApjAwj@n{B{tBjyEs`H|zB{rEf_DcsDji@qoEfcCmzFdgA{kEteCyiAjdCiyBbnCe`@n`@}h@fjHm~PzhIqhPl|@{sHhrIygMdwJgsQvnEyBdrD{w@xeIkm@rsn@wN`~StSd|FcuE|p@{RdhEzj@fkBdk@p~F}cA~aEtr@ftBcJlh@x[dZlaC`]xk@ddAxaBjmAhy@fcBfDb|Dks@bf@|e@zLz_ExoBprMh{BtfTvoCtzJdnEtmJ``BndGd_@|sJ{n@jdGfH`|Fe]jtOkgBdxLaC|_EodAvnG{KnyFdz@vdDzcDp~EbWds@bJduBfhDt|CnSps@taDvgDf|@|eBfsDt_E~gLpyOliC|eApuFrgDh~JblJ|`LzjIv}Adn@thN~_OpsGxzC`lDrcEd{Ab~@f{Br{CpiQbdMjtAh}Ap`DloF`hHnqGljBj_@de@|i@bi@v`Cbc@rr@~mCjlAvjHjcIjq@jlDpjDdaH|oEp|BblFvuIfmRblSpxGriOrtB~}@ncA`pAnhBdx@pjKdwMtuCx~Gp_CdxKbkEtyN~pA`qDngCvpEpCf{Dvb@brBbbDz_Fv}Ad}@hm@lbBddBvn@dPxu@zk@~HpwG|H|cX_\\`jCb\\vxHkWln@~O|pAnoArdBtPv|w@wL~tE|l@hpFj@d{Hvs@lgGsx@`~EsMhyDhSf{n@i@z}J{qBpa~@JzbFhjBh}P~Ct`Inv@blLfoF~}LhR|lB`pBfl@`OtuWMbhFlr@tkGvFfgGb`D~qDb{@fhCwHdgC|a@fgCbHbi@nV|IppBpk@nJ`k@{S~uCmBrgCzs@xaHrBjnCma@b{Em@dcBkY|{Ke@|zA{_@l{BbuAto@MpwWenUrwSygAfjEitAbwB{zAnjEooAlhCqsArtEqw@fxEukBznEmoDriC}|@vmDyxBvrCsk@nkIyy@lrGsmBfiGeiAhnD{vBzfC}`AzrCmkCln@aEb|Ct{@`hIl}@t{A_CfoF~gAbmCjA`rCv]vvCqTtxFnOh}AxVx}AcE|aCueAz{Pcj@tcBjHd}JmaBlsWoAjjCsWzqCp\\x{HfDnq@nWrfBttBdrCpX~bB}MhfCgz@vxCt]htCic@b~Dh|AjgJ~IrqGgZfzGjKxvAp}@tkJxXfm@|Tn`Xwi@rbCis@bvAcvCbbAwqEj`EaqGlyDgmDjsAms@z{DsIjgGqjCb{DcjD|`DetG~hAqcAthDghBhxDij@reHoAv|Cm_CzsDc`AdUyiBzsAikEpzAk\\aP}p@|m@mJvFya@",
+    "id": "C",
+    "long_range_forecast": false,
+    "order": 2,
+    "source": "api",
+    "stops": [
+     {
+      "duration_s": 1800,
+      "mile": 514.2,
+      "start_utc": "2026-11-25T03:00:00Z",
+      "type": "break"
+     },
+     {
+      "duration_s": 36000,
+      "mile": 709.3,
+      "start_utc": "2026-11-25T06:30:00Z",
+      "type": "rest"
+     }
+    ],
+    "timeline": [
+     [
+      0,
+      0.0
+     ],
+     [
+      42,
+      0.1
+     ],
+     [
+      228,
+      0.6
+     ],
+     [
+      260,
+      0.8
+     ],
+     [
+      264,
+      0.8
+     ],
+     [
+      285,
+      1.0
+     ],
+     [
+      1098,
+      14.4
+     ],
+     [
+      1207,
+      16.3
+     ],
+     [
+      1269,
+      17.4
+     ],
+     [
+      2352,
+      37.0
+     ],
+     [
+      2388,
+      37.6
+     ],
+     [
+      4101,
+      68.6
+     ],
+     [
+      4134,
+      69.2
+     ],
+     [
+      5748,
+      98.3
+     ],
+     [
+      5778,
+      98.9
+     ],
+     [
+      8824,
+      153.9
+     ],
+     [
+      8851,
+      154.3
+     ],
+     [
+      8892,
+      154.9
+     ],
+     [
+      19150,
+      340.2
+     ],
+     [
+      19195,
+      340.9
+     ],
+     [
+      19239,
+      341.7
+     ],
+     [
+      19258,
+      342.0
+     ],
+     [
+      25727,
+      458.8
+     ],
+     [
+      25791,
+      459.9
+     ],
+     [
+      28800,
+      514.2
+     ],
+     [
+      30600,
+      514.2
+     ],
+     [
+      36117,
+      613.9
+     ],
+     [
+      36155,
+      614.5
+     ],
+     [
+      37144,
+      632.4
+     ],
+     [
+      37153,
+      632.6
+     ],
+     [
+      37187,
+      633.2
+     ],
+     [
+      37207,
+      633.5
+     ],
+     [
+      37225,
+      633.8
+     ],
+     [
+      37738,
+      643.1
+     ],
+     [
+      37773,
+      643.7
+     ],
+     [
+      39575,
+      676.3
+     ],
+     [
+      39594,
+      676.6
+     ],
+     [
+      41400,
+      709.3
+     ],
+     [
+      77400,
+      709.3
+     ],
+     [
+      84775,
+      842.5
+     ],
+     [
+      84821,
+      843.3
+     ],
+     [
+      91124,
+      957.2
+     ],
+     [
+      91143,
+      957.6
+     ],
+     [
+      91368,
+      961.6
+     ],
+     [
+      91396,
+      962.1
+     ],
+     [
+      91739,
+      968.2
+     ],
+     [
+      91766,
+      968.6
+     ],
+     [
+      101676,
+      1146.2
+     ],
+     [
+      101694,
+      1146.5
+     ],
+     [
+      101893,
+      1150.1
+     ],
+     [
+      101913,
+      1150.4
+     ],
+     [
+      102106,
+      1153.8
+     ],
+     [
+      102269,
+      1155.9
+     ],
+     [
+      102294,
+      1156.3
+     ],
+     [
+      102650,
+      1161.1
+     ],
+     [
+      102669,
+      1161.4
+     ],
+     [
+      103640,
+      1169.0
+     ],
+     [
+      103688,
+      1169.5
+     ],
+     [
+      103777,
+      1170.1
+     ],
+     [
+      103797,
+      1170.3
+     ],
+     [
+      104006,
+      1170.9
+     ],
+     [
+      104047,
+      1171.1
+     ],
+     [
+      104079,
+      1171.2
+     ],
+     [
+      104083,
+      1171.2
+     ],
+     [
+      104106,
+      1171.3
+     ]
+    ],
+    "total_s": 104106
+   }
+  ],
+  "trip_id": "t_GOLDEN",
+  "warnings": []
+ }
+}
