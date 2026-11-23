@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import axe from 'axe-core'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
 import { US_BOUNDS } from '../src/config'
@@ -221,5 +222,106 @@ describe('App', () => {
         'true',
       ),
     )
+  })
+})
+
+/** Automated accessibility checks. Colour contrast needs real layout, so it is tested on the
+ *  design tokens instead (tests/contrast.test.ts). */
+async function expectNoViolations(container: HTMLElement) {
+  const results = await axe.run(container, {
+    rules: { 'color-contrast': { enabled: false }, region: { enabled: false } },
+  })
+  expect(
+    results.violations.map((v) => `${v.id}: ${v.help} (${v.nodes[0]?.html.slice(0, 80)})`),
+  ).toEqual([])
+}
+
+describe('accessibility', () => {
+  it('has no axe violations on the first screen', async () => {
+    const { container } = renderApp()
+    await expectNoViolations(container)
+  })
+
+  it('has no axe violations with results, cards and a recommendation', async () => {
+    stubApi('B')
+    const { container } = renderApp()
+    fake.handlers['load']()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+    await screen.findByTestId('recommendation')
+    await expectNoViolations(container)
+  })
+
+  it('has no axe violations while showing form errors', async () => {
+    const { container } = renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /find the safest route/i }))
+    expect(screen.getAllByRole('alert').length).toBeGreaterThan(0)
+    await expectNoViolations(container)
+  })
+
+  it('has no axe violations when a search fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({ error: { code: 'NO_ROUTE', message: 'No truck route found.' } }),
+            {
+              status: 422,
+            },
+          ),
+      ),
+    )
+    const { container } = renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+    await screen.findByText('No truck route found.')
+    await expectNoViolations(container)
+  })
+
+  it('labels the map region', () => {
+    renderApp()
+    expect(screen.getByRole('region', { name: /map of the routes/i })).toBeInTheDocument()
+  })
+
+  it('tabs through the form in reading order', async () => {
+    renderApp()
+    const order = [
+      screen.getByRole('combobox', { name: 'Origin' }),
+      screen.getByRole('button', { name: /swap origin and destination/i }),
+      screen.getByRole('combobox', { name: 'Destination' }),
+      screen.getByLabelText(/^Departure/),
+      screen.getByLabelText(/cargo weight/i),
+      screen.getByRole('button', { name: /find the safest route/i }),
+      screen.getByRole('button', { name: /denver → cheyenne/i }),
+      screen.getByRole('button', { name: /salt lake city → denver/i }),
+      screen.getByRole('button', { name: /chicago → dallas/i }),
+      screen.getByRole('button', { name: /seattle → chicago/i }),
+    ]
+    for (const element of order) {
+      await userEvent.tab()
+      expect(element).toHaveFocus()
+    }
+  })
+
+  it('moves focus to the results after a search', async () => {
+    stubApi('A')
+    renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+    await waitFor(() =>
+      expect(screen.getByRole('region', { name: 'Search results' })).toHaveFocus(),
+    )
+  })
+
+  it('moves focus to the first invalid field when the form is rejected', async () => {
+    renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /find the safest route/i }))
+    expect(screen.getByRole('combobox', { name: 'Origin' })).toHaveFocus()
+  })
+
+  it('puts the cursor back in the form when the trip is edited', async () => {
+    stubApi('A')
+    renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Edit trip' }))
+    await waitFor(() => expect(screen.getByRole('combobox', { name: 'Origin' })).toHaveFocus())
   })
 })

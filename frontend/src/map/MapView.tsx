@@ -26,6 +26,11 @@ function fitPadding() {
   }
 }
 
+/** Fitting the map to new routes animates, unless the person asked for less motion. */
+function fitDuration() {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 0 : 600
+}
+
 function popupHover(map: Map): Hover {
   const popup = new Popup({ closeButton: false, closeOnClick: false, offset: 12 })
   return {
@@ -70,6 +75,7 @@ export function MapView({ routes, risk, selectedId, onSelect }: Props) {
       (id) => latestOnSelect.current(id),
       popupHover(map),
       fitPadding,
+      fitDuration,
     )
     layers.current = routeLayers
     map.on('load', () => routeLayers.ready())
@@ -86,5 +92,13 @@ export function MapView({ routes, risk, selectedId, onSelect }: Props) {
     layers.current?.update({ routes: routeList, risk: riskList, selectedId })
   }, [routeList, riskList, selectedId])
 
-  return <div ref={container} className="map" data-testid="map" />
+  return (
+    <div
+      ref={container}
+      className="map"
+      data-testid="map"
+      role="region"
+      aria-label="Map of the routes. Use the trip planner for route details."
+    />
+  )
 }

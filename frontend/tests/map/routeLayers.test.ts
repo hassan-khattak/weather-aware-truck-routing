@@ -131,6 +131,24 @@ describe('drawing routes', () => {
     expect(options.padding).toEqual({ top: 1, left: 2, right: 3, bottom: 4 })
   })
 
+  it('animates the fit by default and not at all when the duration is 0 (reduced motion)', () => {
+    layers.ready()
+    layers.update(state())
+    expect(map.fitBounds.mock.calls[0][1].duration).toBe(600)
+
+    const calm = new FakeMap()
+    const still = new RouteLayers(
+      calm,
+      onSelect,
+      hover as Hover,
+      () => 10,
+      () => 0,
+    )
+    still.ready()
+    still.update(state())
+    expect(calm.fitBounds.mock.calls[0][1].duration).toBe(0)
+  })
+
   it('clears slots that a new search does not use', () => {
     layers.update(state({ routes: makeRoutes(['A', 'B', 'C']).routes }))
     layers.update(state({ routes: makeRoutes(['A']).routes }))

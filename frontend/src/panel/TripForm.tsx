@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 import { useId, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import type { Place, RoutesRequest } from '../api/types'
 import { LOAD_MAX_LB, LOAD_MIN_LB } from '../lib/limits'
 import { SAMPLE_TRIPS, type SampleTrip } from '../lib/samples'
@@ -25,7 +26,7 @@ export function TripForm({ onSubmit, serverErrors, now = () => DateTime.now(), i
   const [typedDeparture, setTypedDeparture] = useState<string | null>(initial?.departure ?? null)
   const [load, setLoad] = useState(String(initial?.load ?? DEFAULT_LOAD_LB))
   const [showErrors, setShowErrors] = useState(false)
-  const firstError = useRef<HTMLDivElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
   const departure = typedDeparture ?? (origin?.tz ? nextFullHour(origin.tz, now()) : '')
 
@@ -41,9 +42,9 @@ export function TripForm({ onSubmit, serverErrors, now = () => DateTime.now(), i
 
   function submit(event: React.FormEvent) {
     event.preventDefault()
-    setShowErrors(true)
+    flushSync(() => setShowErrors(true)) // render the messages before moving focus to the field
     if (check.request && origin?.tz) submitRequest(check.request, origin.tz)
-    else firstError.current?.focus()
+    else formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus()
   }
 
   function runSample(trip: SampleTrip) {
@@ -72,10 +73,8 @@ export function TripForm({ onSubmit, serverErrors, now = () => DateTime.now(), i
     : "Departure (origin's local time)"
 
   return (
-    <form onSubmit={submit} noValidate aria-label="Plan a trip" className="space-y-3">
-      <div ref={firstError} tabIndex={-1} className="outline-none">
-        <PlaceField label="Origin" value={origin} onChange={setOrigin} error={errors.origin} />
-      </div>
+    <form ref={formRef} onSubmit={submit} noValidate aria-label="Plan a trip" className="space-y-3">
+      <PlaceField label="Origin" value={origin} onChange={setOrigin} error={errors.origin} />
 
       <div className="flex justify-center">
         <button

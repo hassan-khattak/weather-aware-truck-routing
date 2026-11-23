@@ -65,6 +65,7 @@ export class RouteLayers {
   private readonly onSelect: (routeId: string) => void
   private readonly hover: Hover
   private readonly fitPadding: () => unknown
+  private readonly fitDuration: () => number
   private created = false
   private state: RouteLayersState = { routes: [], risk: undefined, selectedId: null }
   private drawnRoutes: Route[] | null = null
@@ -76,11 +77,13 @@ export class RouteLayers {
     onSelect: (routeId: string) => void,
     hover: Hover,
     fitPadding: () => unknown = () => 40,
+    fitDuration: () => number = () => 600,
   ) {
     this.map = map
     this.onSelect = onSelect
     this.hover = hover
     this.fitPadding = fitPadding
+    this.fitDuration = fitDuration
   }
 
   /** Call once the map style has loaded. Creates the sources and layers, then draws any state
@@ -138,7 +141,8 @@ export class RouteLayers {
       this.map.getSource(sourceId(id))?.setData(route ? lineString(coordinates) : EMPTY)
     }
     const bounds = boundsOf(lines)
-    if (bounds) this.map.fitBounds(bounds, { padding: this.fitPadding(), duration: 600 })
+    if (bounds)
+      this.map.fitBounds(bounds, { padding: this.fitPadding(), duration: this.fitDuration() })
   }
 
   private styleRoutes(): void {
