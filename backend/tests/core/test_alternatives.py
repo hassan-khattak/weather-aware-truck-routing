@@ -1,5 +1,6 @@
 """Quality gates and via-points for generated alternative routes (plan.md sections 3.8, 4.12)."""
 
+import math
 from pathlib import Path
 
 import pytest
@@ -14,12 +15,12 @@ from core.alternatives import (
     via_candidates,
     via_point,
 )
-from core.checkpoints import haversine_mi, route_length_mi
+from core.checkpoints import EARTH_RADIUS_MI, haversine_mi, route_length_mi
 from core.models import Point
 from core.rules import load_rules
 
 RULES = load_rules(Path(__file__).resolve().parents[2] / "rules.yaml")
-DEGREE_MI = 69.093  # one degree of latitude
+DEGREE_MI = 2 * math.pi * EARTH_RADIUS_MI / 360  # one degree of latitude, ~69.09 mi
 
 
 def north_south(lat_from: float, lat_to: float, lon: float = -100.0) -> list[Point]:
