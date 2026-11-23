@@ -8,11 +8,11 @@ ETA, classify with the load rules, turn checkpoint levels into risk miles and ra
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from core.checkpoints import place_checkpoints
 from core.forecast_hour import weather_at
-from core.heatmap import snap_point
+from core.heatmap import PackedHeatmap, corridor_cells, heatmap_grid_deg, pack_heatmap, snap_point
 from core.models import Level, Weather
 from core.risk import classify
 from core.rules import Rules
@@ -28,6 +28,7 @@ from core.scoring import (
 from places.nearest import NearestTown, lookup_town
 from places.timezones import zone_for
 from providers.base import GridPoint
+from trips.geometry import simplify
 from trips.planner import PlannedRoute, Trip
 from weather_grid.service import GridResult, WeatherGridService
 
@@ -65,6 +66,8 @@ class Assessment:
     routes: tuple[RouteRisk, ...]
     recommendation: Recommendation
     weather: GridResult  # series per grid point, plus stale / as_of / missing
+    heatmap: PackedHeatmap
+    heatmap_start_utc: datetime  # hour 0 of the heatmap: the departure time
 
 
 def road_at(route: PlannedRoute, mile: float) -> str | None:
@@ -121,6 +124,37 @@ def _place(route: PlannedRoute, trip: Trip, rules: Rules) -> list[_Placed]:
     ]
 
 
+def _heatmap_cells(trip: Trip, rules: Rules) -> tuple[list[GridPoint], float]:
+    """Corridor cells around all routes (simplified geometry is enough for a 30 mile band) and
+    the cell size chosen for this trip's length."""
+    tolerance = rules.display.geometry_tolerance_deg
+    drawn = [simplify(route.raw.points, tolerance) for route in trip.routes]
+    grid_deg = heatmap_grid_deg(max(route.length_mi for route in trip.routes), rules)
+    return [GridPoint(lat, lon) for lat, lon in corridor_cells(drawn, rules)], grid_deg
+
+
+def _build_heatmap(
+    trip: Trip, cells: list[GridPoint], grid_deg: float, grid: GridResult, rules: Rules
+) -> PackedHeatmap:
+    """Weather at every cell for each hour from departure (0..48), packed for the browser."""
+    departure = trip.request.departure.utc
+    by_hour: list[list[Weather | None]] = []
+    for hour in range(rules.heatmap.hours):
+        moment = departure + timedelta(hours=hour)
+        row: list[Weather | None] = []
+        for cell in cells:
+            series = grid.series.get(cell)
+            row.append(weather_at(series, moment) if series is not None else None)
+        by_hour.append(row)
+    return pack_heatmap(
+        [(c.lat, c.lon) for c in cells],
+        by_hour,
+        trip.request.load_lb,
+        rules,
+        grid_deg=grid_deg,
+    )
+
+
 def assess(
     trip: Trip,
     weather_service: WeatherGridService,
@@ -132,7 +166,9 @@ def assess(
     Raises ProviderUnavailable only if no weather at all could be obtained (not even stale).
     """
     placed = {route.id: _place(route, trip, rules) for route in trip.routes}
-    grid = weather_service.get_series([p.point for items in placed.values() for p in items])
+    cells, grid_deg = _heatmap_cells(trip, rules)
+    # One fetch for checkpoint cells and heatmap cells together: only missing ones hit the provider.
+    grid = weather_service.get_series([p.point for items in placed.values() for p in items] + cells)
     load_lb = trip.request.load_lb
     origin_zone = trip.request.departure.tz
 
@@ -189,4 +225,6 @@ def assess(
         routes=tuple(route_risks),
         recommendation=recommend([r.score for r in route_risks], rules),
         weather=grid,
+        heatmap=_build_heatmap(trip, cells, grid_deg, grid, rules),
+        heatmap_start_utc=trip.request.departure.utc,
     )
