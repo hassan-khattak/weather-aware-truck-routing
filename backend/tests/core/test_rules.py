@@ -29,6 +29,7 @@ REQUIRED_SECTIONS = [
     "departure",
     "weather_grid",
     "heatmap",
+    "display",
 ]
 
 
@@ -122,6 +123,7 @@ def valid_rules() -> dict[str, Any]:
             "batch_size": 200,
         },
         "heatmap": {"hours": 49},
+        "display": {"geometry_tolerance_deg": 0.002},
     }
 
 
@@ -276,11 +278,20 @@ def test_heatmap_cell_size_must_be_a_multiple_of_the_checkpoint_grid() -> None:
         parse_rules(doc)
 
 
+def test_display_tuning_is_loaded_and_must_be_positive() -> None:
+    assert parse_rules(valid_rules()).display.geometry_tolerance_deg == 0.002
+    doc = valid_rules()
+    doc["display"]["geometry_tolerance_deg"] = 0
+    with pytest.raises(RulesError, match=r"display\.geometry_tolerance_deg"):
+        parse_rules(doc)
+
+
 def test_shipped_rules_yaml_is_valid_and_matches_the_spec() -> None:
     rules = load_rules(BACKEND_DIR / "rules.yaml")
     assert rules.thresholds.wind_mph[-1].from_ == 55
     assert rules.hours_of_service.max_driving_h == 11
     assert rules.heatmap.hours == 49
+    assert rules.display.geometry_tolerance_deg > 0
     assert [t.deg for t in rules.weather_grid.heatmap_tiers] == [0.2, 0.4, 0.8]
 
 
