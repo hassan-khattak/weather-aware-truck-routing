@@ -9,10 +9,13 @@ interface UiState {
   /** Changes on every submit, so searching again always fetches fresh data. */
   searchId: number
   selectedRouteId: string | null
+  /** Checkpoint (index on the selected route) pinned by a click on a dot or a list row. */
+  activeCheckpoint: number | null
   /** Form folded into a one-line summary after a search. */
   formCollapsed: boolean
   submit: (request: RoutesRequest, originTz: string) => void
   selectRoute: (id: string) => void
+  setActiveCheckpoint: (idx: number | null) => void
   setFormCollapsed: (collapsed: boolean) => void
   reset: () => void
 }
@@ -22,6 +25,7 @@ const initial = {
   originTz: null,
   searchId: 0,
   selectedRouteId: null,
+  activeCheckpoint: null,
   formCollapsed: false,
 }
 
@@ -34,9 +38,12 @@ export const useUiStore = create<UiState>((set) => ({
       originTz,
       searchId: state.searchId + 1,
       selectedRouteId: null,
+      activeCheckpoint: null,
       formCollapsed: true,
     })),
-  selectRoute: (id) => set({ selectedRouteId: id }),
+  // Checkpoint numbers belong to one route, so switching routes clears the pinned one.
+  selectRoute: (id) => set({ selectedRouteId: id, activeCheckpoint: null }),
+  setActiveCheckpoint: (idx) => set({ activeCheckpoint: idx }),
   setFormCollapsed: (collapsed) => set({ formCollapsed: collapsed }),
   reset: () => set(initial),
 }))

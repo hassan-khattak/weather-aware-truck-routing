@@ -12,7 +12,8 @@ import { useUiStore } from './state/uiStore'
 
 export default function App() {
   const { request, originTz, searchId, selectedRouteId, formCollapsed } = useUiStore()
-  const { submit, selectRoute, setFormCollapsed } = useUiStore()
+  const { submit, selectRoute, setFormCollapsed, activeCheckpoint, setActiveCheckpoint } =
+    useUiStore()
   const { routes, risk } = useTrip(request, searchId)
   const selectedId = resolveSelectedId(selectedRouteId, routes.data, risk.data)
   const results = useRef<HTMLDivElement>(null)
@@ -66,6 +67,8 @@ export default function App() {
           risk={risk.data}
           selectedId={selectedId}
           onSelect={selectRoute}
+          activeCheckpoint={activeCheckpoint}
+          onPickCheckpoint={setActiveCheckpoint}
         />
       </div>
     </main>

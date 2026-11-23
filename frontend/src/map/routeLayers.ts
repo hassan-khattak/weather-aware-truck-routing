@@ -20,7 +20,7 @@ const EMPTY = { type: 'FeatureCollection', features: [] } as const
 /** The small part of MapLibre's Map this module uses (so it can be faked in tests). */
 export interface MapLike {
   addSource(id: string, source: unknown): unknown
-  addLayer(layer: unknown): unknown
+  addLayer(layer: unknown, beforeId?: string): unknown
   getSource(id: string): { setData(data: unknown): void } | undefined
   setPaintProperty(layer: string, name: string, value: unknown): unknown
   moveLayer(id: string, beforeId?: string): unknown
@@ -31,6 +31,7 @@ export interface MapLike {
 
 export interface LayerMouseEvent {
   lngLat: { lng: number; lat: number }
+  features?: { properties?: Record<string, unknown> }[]
 }
 
 export interface Hover {
@@ -66,6 +67,8 @@ export class RouteLayers {
   private readonly hover: Hover
   private readonly fitPadding: () => unknown
   private readonly fitDuration: () => number
+  /** Layers that must stay above the route lines; lines are inserted and raised below it. */
+  private readonly anchor: string | undefined
   private created = false
   private state: RouteLayersState = { routes: [], risk: undefined, selectedId: null }
   private drawnRoutes: Route[] | null = null
@@ -78,7 +81,9 @@ export class RouteLayers {
     hover: Hover,
     fitPadding: () => unknown = () => 40,
     fitDuration: () => number = () => 600,
+    anchorLayer?: string,
   ) {
+    this.anchor = anchorLayer
     this.map = map
     this.onSelect = onSelect
     this.hover = hover
@@ -93,17 +98,20 @@ export class RouteLayers {
     this.created = true
     for (const id of ROUTE_IDS) {
       this.map.addSource(sourceId(id), { type: 'geojson', data: EMPTY, lineMetrics: true })
-      this.map.addLayer({
-        id: layerId(id),
-        type: 'line',
-        source: sourceId(id),
-        layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: {
-          'line-color': UNSELECTED_COLOR,
-          'line-width': UNSELECTED_WIDTH,
-          'line-opacity': 0.75,
+      this.map.addLayer(
+        {
+          id: layerId(id),
+          type: 'line',
+          source: sourceId(id),
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+          paint: {
+            'line-color': UNSELECTED_COLOR,
+            'line-width': UNSELECTED_WIDTH,
+            'line-opacity': 0.75,
+          },
         },
-      })
+        this.anchor,
+      )
       this.map.on('click', layerId(id), () => this.onSelect(id))
       this.map.on('mousemove', layerId(id), (event) => {
         this.map.getCanvas().style.cursor = 'pointer'
@@ -162,7 +170,7 @@ export class RouteLayers {
         this.map.setPaintProperty(layer, 'line-color', SELECTED_COLOR)
         // `null` resets the property, which is how a route stops being risk-coloured.
         this.map.setPaintProperty(layer, 'line-gradient', gradient)
-        this.map.moveLayer(layer) // to the top, above the other routes
+        this.map.moveLayer(layer, this.anchor) // above the other routes, below the dots
       } else {
         this.map.setPaintProperty(layer, 'line-width', UNSELECTED_WIDTH)
         this.map.setPaintProperty(layer, 'line-opacity', 0.75)

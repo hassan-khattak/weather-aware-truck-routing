@@ -198,7 +198,7 @@ describe('selection styling', () => {
       'line-width': UNSELECTED_WIDTH,
       'line-color': UNSELECTED_COLOR,
     })
-    expect(map.moveLayer).toHaveBeenLastCalledWith(layerId('B'))
+    expect(map.moveLayer).toHaveBeenLastCalledWith(layerId('B'), undefined)
   })
 
   it('is neutral (no gradient) until risk is known', () => {

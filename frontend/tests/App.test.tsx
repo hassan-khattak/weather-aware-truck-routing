@@ -125,8 +125,22 @@ describe('App', () => {
     stubApi('B')
     renderApp()
     fake.handlers['load']() // the map style has loaded
-    expect(fake.sources).toEqual(['route-A', 'route-B', 'route-C'])
-    expect(fake.layers).toEqual(['route-line-A', 'route-line-B', 'route-line-C'])
+    expect(fake.sources).toEqual([
+      'checkpoint-highlight',
+      'route-markers',
+      'checkpoint-dots',
+      'route-A',
+      'route-B',
+      'route-C',
+    ])
+    expect(fake.layers).toEqual([
+      'checkpoint-highlight',
+      'route-markers',
+      'checkpoint-dots',
+      'route-line-A',
+      'route-line-B',
+      'route-line-C',
+    ])
 
     await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
 
@@ -150,8 +164,8 @@ describe('App', () => {
     expect(fake.paint['route-line-B']['line-gradient']).toBeNull()
 
     // Nothing was ever added again.
-    expect(fake.sources).toHaveLength(3)
-    expect(fake.layers).toHaveLength(3)
+    expect(fake.sources).toHaveLength(6) // three checkpoint sources, three routes
+    expect(fake.layers).toHaveLength(6)
   })
 
   it('folds the form into a summary after a search and keeps the values when reopened', async () => {
