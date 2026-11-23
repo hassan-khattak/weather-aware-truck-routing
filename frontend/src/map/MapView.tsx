@@ -1,5 +1,6 @@
 import { Map, NavigationControl, Popup } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import './worker'
 import { useEffect, useRef } from 'react'
 import type { RiskResponse, Route, RoutesResponse } from '../api/types'
 import { config, US_BOUNDS } from '../config'

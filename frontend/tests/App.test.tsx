@@ -109,7 +109,7 @@ vi.mock('maplibre-gl', () => {
     }
     remove() {}
   }
-  return { Map, Popup, NavigationControl: class {} }
+  return { Map, Popup, NavigationControl: class {}, setWorkerUrl: () => {} }
 })
 
 function stubApi(recommended: string, withCheckpoints = false) {
