@@ -196,7 +196,12 @@ class FakeRouting:
         self.requests: list[tuple[Point, Point]] = []
 
     def routes(
-        self, origin: Point, destination: Point, depart_at_utc: datetime, vehicle: Vehicle
+        self,
+        origin: Point,
+        destination: Point,
+        depart_at_utc: datetime,
+        vehicle: Vehicle,
+        via: Sequence[Point] = (),
     ) -> list[RawRoute]:
         self.requests.append((origin, destination))
         return [route((origin, destination))]

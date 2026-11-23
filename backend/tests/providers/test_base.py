@@ -45,7 +45,12 @@ def test_grid_points_are_hashable_and_sortable() -> None:
 
 class FakeRouting:
     def routes(
-        self, origin: Point, destination: Point, depart_at_utc: datetime, vehicle: Vehicle
+        self,
+        origin: Point,
+        destination: Point,
+        depart_at_utc: datetime,
+        vehicle: Vehicle,
+        via: Sequence[Point] = (),
     ) -> list[RawRoute]:
         return [
             RawRoute(

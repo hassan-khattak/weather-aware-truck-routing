@@ -78,9 +78,15 @@ class RawRoute:
 
 class RoutingProvider(Protocol):
     def routes(
-        self, origin: Point, destination: Point, depart_at_utc: datetime, vehicle: Vehicle
+        self,
+        origin: Point,
+        destination: Point,
+        depart_at_utc: datetime,
+        vehicle: Vehicle,
+        via: Sequence[Point] = (),
     ) -> list[RawRoute]:
-        """Up to the provider's alternatives, best first. Raises NoRoute / ProviderUnavailable."""
+        """Routes best first. With `via` points the route must pass through them (used to ask for
+        a genuinely different alternative). Raises NoRoute / ProviderUnavailable."""
         ...
 
     def search(self, query: str, limit: int) -> list[Place]:

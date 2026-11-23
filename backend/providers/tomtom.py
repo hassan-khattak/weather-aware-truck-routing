@@ -7,6 +7,7 @@ instructions, and the road name along the route. The browser never talks to TomT
 
 import hashlib
 import json
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Any, Protocol
 from urllib.parse import quote
@@ -149,7 +150,9 @@ class TomTomRoutingProvider:
         self._base_url = base_url
         self._max_alternatives = max_alternatives
 
-    def _params(self, depart_at_utc: datetime, vehicle: Vehicle) -> dict[str, str]:
+    def _params(
+        self, depart_at_utc: datetime, vehicle: Vehicle, *, with_via: bool
+    ) -> dict[str, str]:
         departure = depart_at_utc.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
         return {
             "key": self._api_key,
@@ -158,7 +161,8 @@ class TomTomRoutingProvider:
             "vehicleWeight": str(round(vehicle.weight_kg)),
             "vehicleMaxSpeed": str(round(vehicle.max_speed_kmh)),
             "departAt": departure,
-            "maxAlternatives": str(self._max_alternatives),
+            # A via request asks for one specific route, not for alternatives to it.
+            "maxAlternatives": "0" if with_via else str(self._max_alternatives),
             "instructionsType": "text",
             "language": "en-US",
             "traffic": "true",
@@ -166,26 +170,35 @@ class TomTomRoutingProvider:
         }
 
     @staticmethod
-    def _cache_key(origin: Point, destination: Point, params: dict[str, str]) -> str:
+    def _cache_key(
+        origin: Point, destination: Point, via: Sequence[Point], params: dict[str, str]
+    ) -> str:
         inputs = {
             "o": [round(v, 5) for v in origin],
             "d": [round(v, 5) for v in destination],
+            "v": [[round(c, 5) for c in point] for point in via],
             "p": {k: v for k, v in params.items() if k != "key"},
         }
         digest = hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()
         return f"route:v1:{digest}"
 
     def routes(
-        self, origin: Point, destination: Point, depart_at_utc: datetime, vehicle: Vehicle
+        self,
+        origin: Point,
+        destination: Point,
+        depart_at_utc: datetime,
+        vehicle: Vehicle,
+        via: Sequence[Point] = (),
     ) -> list[RawRoute]:
-        params = self._params(depart_at_utc, vehicle)
-        cache_key = self._cache_key(origin, destination, params)
+        params = self._params(depart_at_utc, vehicle, with_via=bool(via))
+        cache_key = self._cache_key(origin, destination, via, params)
         if self._cache is not None:
             cached = self._cache.get(cache_key)
             if cached is not None:
                 return list(cached)
 
-        locations = f"{origin[0]:.5f},{origin[1]:.5f}:{destination[0]:.5f},{destination[1]:.5f}"
+        stops = [origin, *via, destination]
+        locations = ":".join(f"{lat:.5f},{lon:.5f}" for lat, lon in stops)
         url = f"{self._base_url}/routing/1/calculateRoute/{locations}/json"
         try:
             response = self._client.get(url, params=params)

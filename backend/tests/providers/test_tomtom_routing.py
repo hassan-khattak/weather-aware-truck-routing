@@ -166,3 +166,38 @@ def test_a_different_departure_or_weight_is_not_a_cache_hit(payload: dict[str, A
 def test_a_missing_api_key_is_a_configuration_error() -> None:
     with pytest.raises(ValueError, match="API key"):
         TomTomRoutingProvider("")
+
+
+@respx.mock
+def test_via_points_are_added_to_the_route_and_alternatives_are_not_requested(
+    payload: dict[str, Any],
+) -> None:
+    url = (
+        "https://api.tomtom.com/routing/1/calculateRoute/"
+        "32.77670,-96.79700:36.00000,-100.50000:39.73920,-104.99030/json"
+    )
+    route = respx.get(url).mock(return_value=httpx.Response(200, json=payload))
+    provider().routes(DALLAS, DENVER, DEPART, VEHICLE, via=[(36.0, -100.5)])
+    assert route.calls.last.request.url.params["maxAlternatives"] == "0"
+
+
+@respx.mock
+def test_a_via_request_is_cached_separately_from_the_plain_route(payload: dict[str, Any]) -> None:
+    respx.get(url__startswith="https://api.tomtom.com/routing/1/calculateRoute/").mock(
+        return_value=httpx.Response(200, json=payload)
+    )
+    cache = DictCache()
+    p = provider(cache)
+    p.routes(DALLAS, DENVER, DEPART, VEHICLE)
+    p.routes(DALLAS, DENVER, DEPART, VEHICLE, via=[(36.0, -100.5)])
+    p.routes(DALLAS, DENVER, DEPART, VEHICLE, via=[(36.0, -100.5)])
+    assert len(cache.store) == 2
+
+
+def test_the_fixture_provider_has_no_via_routes() -> None:
+    from providers.fixtures_provider import FixtureRoutingProvider
+
+    with pytest.raises(NoRoute):
+        FixtureRoutingProvider().routes(
+            (39.7392, -104.9903), (41.14, -104.8202), DEPART, VEHICLE, via=[(40.5, -105.2)]
+        )

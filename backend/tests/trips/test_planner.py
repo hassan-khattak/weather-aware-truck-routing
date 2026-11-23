@@ -117,9 +117,11 @@ def test_the_truck_weight_sent_to_routing_is_tare_plus_cargo() -> None:
     seen = []
 
     class Spy(FixtureRoutingProvider):
-        def routes(self, origin, destination, depart_at_utc, vehicle):  # type: ignore[no-untyped-def]
+        def routes(  # type: ignore[no-untyped-def]
+            self, origin, destination, depart_at_utc, vehicle, via=()
+        ):
             seen.append(vehicle)
-            return super().routes(origin, destination, depart_at_utc, vehicle)
+            return super().routes(origin, destination, depart_at_utc, vehicle, via)
 
     plan_trip(request_for(TRIPS["denver-cheyenne"], load_lb=10_000), Spy(), get_rules(), NOW)
     assert seen[0].weight_kg == pytest.approx((35_000 + 10_000) * 0.45359237)

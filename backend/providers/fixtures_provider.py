@@ -30,8 +30,16 @@ class FixtureRoutingProvider:
         ]
 
     def routes(
-        self, origin: Point, destination: Point, depart_at_utc: datetime, vehicle: Vehicle
+        self,
+        origin: Point,
+        destination: Point,
+        depart_at_utc: datetime,
+        vehicle: Vehicle,
+        via: Sequence[Point] = (),
     ) -> list[RawRoute]:
+        if via:
+            # Nothing is recorded for via-point requests, so generated alternatives are skipped.
+            raise NoRoute("fixtures have no via-point routes")
         for trip, routes in self._trips:
             near_start = haversine_mi(origin, (trip.origin.lat, trip.origin.lon)) < _TRIP_MATCH_MI
             near_end = (
