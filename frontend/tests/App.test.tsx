@@ -1,12 +1,33 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import axe from 'axe-core'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
 import { US_BOUNDS } from '../src/config'
 import { useUiStore } from '../src/state/uiStore'
+import type { Checkpoint } from '../src/api/types'
 import { makeRisk, makeRoutes } from './fixtures'
+
+const CHECKPOINTS: Checkpoint[] = [0, 1, 2].map((idx) => ({
+  idx,
+  mile: idx * 50,
+  lat: 39.8 + idx * 0.4,
+  lon: -104.9,
+  eta_utc: '2026-11-24T21:00:00Z',
+  tz: 'America/Denver',
+  road: 'I-25 N',
+  town: 'Fort Collins, CO',
+  town_dist_mi: 3,
+  town_dir: 'S',
+  wind_mph: 12,
+  gust_mph: 20,
+  rain_in_hr: 0,
+  snow_in_hr: 0,
+  level: idx === 1 ? 'HIGH' : 'LOW',
+  reasons: idx === 1 ? ['Wind 12 mph → High'] : [],
+  forecast: true,
+}))
 
 // jsdom has no WebGL, so the real map cannot run here. This fake records what the app asks of it.
 const fake = vi.hoisted(() => {
@@ -18,6 +39,8 @@ const fake = vi.hoisted(() => {
     layers: [] as string[],
     data: {} as Record<string, unknown>,
     paint: {} as Record<string, Record<string, unknown>>,
+    eased: [] as unknown[],
+    popups: [] as string[],
   }
   return state
 })
@@ -28,6 +51,12 @@ vi.mock('maplibre-gl', () => {
       fake.constructed.push(options)
     }
     addControl() {}
+    getBounds() {
+      return { contains: () => false } // every checkpoint is off screen
+    }
+    easeTo(options: unknown) {
+      fake.eased.push(options)
+    }
     remove() {
       fake.removed += 1
     }
@@ -57,7 +86,8 @@ vi.mock('maplibre-gl', () => {
     setLngLat() {
       return this
     }
-    setDOMContent() {
+    setDOMContent(node: Node) {
+      fake.popups.push(node.textContent ?? '')
       return this
     }
     addTo() {
@@ -68,13 +98,18 @@ vi.mock('maplibre-gl', () => {
   return { Map, Popup, NavigationControl: class {} }
 })
 
-function stubApi(recommended: string) {
+function stubApi(recommended: string, withCheckpoints = false) {
   const json = (body: unknown) => new Response(JSON.stringify(body), { status: 200 })
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string) => {
       if (url === '/api/v1/routes') return json(makeRoutes())
-      if (url === '/api/v1/risk') return json(makeRisk(recommended))
+      if (url === '/api/v1/risk') {
+        const risk = makeRisk(recommended)
+        if (withCheckpoints)
+          risk.routes = risk.routes.map((r) => ({ ...r, checkpoints: CHECKPOINTS }))
+        return json(risk)
+      }
       return json([])
     }),
   )
@@ -101,6 +136,8 @@ afterEach(() => {
     layers: [],
     data: {},
     paint: {},
+    eased: [],
+    popups: [],
   })
 })
 
@@ -166,6 +203,34 @@ describe('App', () => {
     // Nothing was ever added again.
     expect(fake.sources).toHaveLength(6) // three checkpoint sources, three routes
     expect(fake.layers).toHaveLength(6)
+  })
+
+  it('syncs the checkpoint list with the map: a row pins the tooltip and flies there', async () => {
+    stubApi('A', true)
+    renderApp()
+    fake.handlers['load']()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+
+    const list = await screen.findByRole('region', { name: 'Checkpoints on Route A' })
+    await userEvent.click(within(list).getByRole('button', { name: /CP 2 · Mile 50/ }))
+    expect(fake.popups.at(-1)).toContain('CP 2 · Mile 50 · I-25 N near Fort Collins, CO')
+    expect(fake.popups.at(-1)).toContain('HIGH: Wind 12 mph → High')
+    expect(fake.eased).toHaveLength(1)
+    expect(useUiStore.getState().activeCheckpoint).toBe(1)
+
+    // A click on a dot on the map activates the same checkpoint's row.
+    const dot = fake.handlers['click:checkpoint-dots'] as (event: unknown) => void
+    dot({ lngLat: { lng: -104.9, lat: 40.6 }, features: [{ properties: { idx: 2 } }] })
+    await waitFor(() =>
+      expect(within(list).getByRole('button', { name: /CP 3/ })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      ),
+    )
+
+    // Escape closes the tooltip.
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(useUiStore.getState().activeCheckpoint).toBeNull())
   })
 
   it('folds the form into a summary after a search and keeps the values when reopened', async () => {

@@ -68,6 +68,7 @@ export function MapView({
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const layers = useRef<RouteLayers | null>(null)
+  const mapRef = useRef<Map | null>(null)
   const checkpoints = useRef<CheckpointLayers | null>(null)
   const tooltip = useRef<CheckpointTooltip | null>(null)
   const latestOnSelect = useRef(onSelect)
@@ -94,6 +95,7 @@ export function MapView({
       fitBoundsOptions: { padding: 20 },
     })
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
+    mapRef.current = map
     const tip = checkpointTooltip(map)
     tooltip.current = tip
     const showCheckpoint = (idx: number | null) => {
@@ -126,6 +128,7 @@ export function MapView({
     return () => {
       layers.current = null
       checkpoints.current = null
+      mapRef.current = null
       tooltip.current = null
       map.remove()
     }
@@ -156,6 +159,11 @@ export function MapView({
     const cp = shown.current.points.find((p) => p.idx === activeCheckpoint)
     if (cp) tooltip.current?.show(cp, sharedRoadNote(cp, shown.current.others))
     else tooltip.current?.hide()
+    // A pinned checkpoint that is off screen (a list pick) is brought into view.
+    const map = mapRef.current
+    if (cp && map && !map.getBounds().contains([cp.lon, cp.lat])) {
+      map.easeTo({ center: [cp.lon, cp.lat], duration: fitDuration() })
+    }
   }, [selectedRoute, selectedRisk, riskList, selectedId, activeCheckpoint])
 
   // Escape unpins the tooltip.

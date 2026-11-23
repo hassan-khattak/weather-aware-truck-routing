@@ -28,6 +28,9 @@ export const LEVEL_ORDER: Level[] = [
   'NO_FORECAST',
 ]
 
+/** Levels that need attention: the "High and above" filter and the thicker dot ring. */
+export const HIGH_AND_ABOVE: ReadonlySet<Level> = new Set<Level>(['HIGH', 'SEVERE', 'NO_TRAVEL'])
+
 function channel(value: number): number {
   const v = value / 255
   return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4

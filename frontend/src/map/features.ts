@@ -1,6 +1,6 @@
 import type { Checkpoint, Route } from '../api/types'
 import { haversineMi } from '../lib/geo'
-import { LEVELS } from '../levels'
+import { HIGH_AND_ABOVE, LEVELS } from '../levels'
 import type { LngLat } from './bounds'
 
 export interface Feature {
@@ -15,8 +15,6 @@ export interface FeatureCollection {
 }
 
 export const EMPTY_FEATURES: FeatureCollection = { type: 'FeatureCollection', features: [] }
-
-const SEVERE_AND_ABOVE = new Set(['HIGH', 'SEVERE', 'NO_TRAVEL'])
 
 const point = ([lon, lat]: LngLat, properties: Feature['properties']): Feature => ({
   type: 'Feature',
@@ -33,7 +31,7 @@ export function checkpointFeatures(checkpoints: Checkpoint[]): FeatureCollection
         idx: cp.idx,
         level: cp.level,
         color: LEVELS[cp.level].color,
-        heavy: SEVERE_AND_ABOVE.has(cp.level),
+        heavy: HIGH_AND_ABOVE.has(cp.level),
       }),
     ),
   }

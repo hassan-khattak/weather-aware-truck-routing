@@ -3,6 +3,7 @@ import { useTrip } from './api/hooks'
 import { serverFieldErrors } from './lib/serverErrors'
 import { MapView } from './map/MapView'
 import { Panel } from './panel/Panel'
+import { CheckpointList } from './panel/CheckpointList'
 import { RouteCards } from './panel/RouteCards'
 import { SearchStatus } from './panel/SearchStatus'
 import { TripForm } from './panel/TripForm'
@@ -16,6 +17,7 @@ export default function App() {
     useUiStore()
   const { routes, risk } = useTrip(request, searchId)
   const selectedId = resolveSelectedId(selectedRouteId, routes.data, risk.data)
+  const selectedRisk = risk.data?.routes.find((r) => r.id === selectedId)
   const results = useRef<HTMLDivElement>(null)
   const formArea = useRef<HTMLDivElement>(null)
 
@@ -57,6 +59,14 @@ export default function App() {
               risk={risk.data}
               selectedId={selectedId}
               onSelect={selectRoute}
+            />
+          )}
+          {selectedRisk && selectedId && (
+            <CheckpointList
+              routeId={selectedId}
+              checkpoints={selectedRisk.checkpoints}
+              activeIdx={activeCheckpoint}
+              onPick={setActiveCheckpoint}
             />
           )}
         </div>
