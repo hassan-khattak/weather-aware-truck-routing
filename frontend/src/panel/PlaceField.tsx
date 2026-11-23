@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { friendlyMessage } from '../api/client'
 import { MIN_PLACE_CHARS, usePlaces } from '../api/hooks'
 import type { Place } from '../api/types'
 import { useDebounced } from '../lib/useDebounced'
@@ -30,7 +31,13 @@ export function PlaceField({ label, value, onChange, error }: Props) {
 
   const debounced = useDebounced(text, AUTOCOMPLETE_DEBOUNCE_MS)
   const searching = open && value === null && debounced.trim().length >= MIN_PLACE_CHARS
-  const { data: options = [], isFetching, isError } = usePlaces(searching ? debounced : '')
+  const {
+    data: options = [],
+    isFetching,
+    isError,
+    error: lookupError,
+  } = usePlaces(searching ? debounced : '')
+  const lookupFailed = searching && isError
   const showList = searching && !isError
 
   function choose(place: Place) {
@@ -57,13 +64,15 @@ export function PlaceField({ label, value, onChange, error }: Props) {
     }
   }
 
-  const status = !showList
-    ? ''
-    : isFetching
-      ? 'Searching…'
-      : options.length === 0
-        ? 'No matches. Try a nearby city or a ZIP code.'
-        : `${options.length} suggestion${options.length === 1 ? '' : 's'}`
+  const status = lookupFailed
+    ? friendlyMessage(lookupError)
+    : !showList
+      ? ''
+      : isFetching
+        ? 'Searching…'
+        : options.length === 0
+          ? 'No matches. Try a nearby city or a ZIP code.'
+          : `${options.length} suggestion${options.length === 1 ? '' : 's'}`
 
   return (
     <div className="relative">
@@ -123,7 +132,13 @@ export function PlaceField({ label, value, onChange, error }: Props) {
       {/* One live region: read out for screen readers, and shown when there is nothing to pick. */}
       <p
         role="status"
-        className={options.length === 0 && showList ? 'mt-1 text-xs text-muted' : 'sr-only'}
+        className={
+          lookupFailed
+            ? 'mt-1 text-xs text-severe'
+            : options.length === 0 && showList
+              ? 'mt-1 text-xs text-muted'
+              : 'sr-only'
+        }
       >
         {status}
       </p>

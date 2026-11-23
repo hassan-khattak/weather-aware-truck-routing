@@ -116,6 +116,17 @@ describe('PlaceField', () => {
     expect(await screen.findByText(/no matches/i)).toBeInTheDocument()
   })
 
+  it('says when suggestions could not be loaded instead of staying silent', async () => {
+    stubPlaces('error')
+    renderField()
+    await userEvent.type(screen.getByRole('combobox', { name: 'Origin' }), 'Denv')
+    // The lookup is retried once before it counts as failed.
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('down'), {
+      timeout: 4000,
+    })
+    expect(screen.getByRole('status')).toHaveClass('text-severe')
+  })
+
   it('shows a field error with role alert', () => {
     const client = new QueryClient()
     render(

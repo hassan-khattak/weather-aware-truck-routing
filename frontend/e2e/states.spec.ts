@@ -63,6 +63,18 @@ test('an expired trip is repeated silently', async ({ page }) => {
   await expect(page.getByRole('alert')).toHaveCount(0)
 })
 
+test('going offline shows "can\'t reach the server" with Try again, and recovers', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.context().setOffline(true)
+  await page.getByRole('button', { name: /Chicago → Dallas/ }).click()
+  await expect(page.getByRole('alert')).toContainText(/can't reach the server/i)
+  await page.context().setOffline(false)
+  await page.getByRole('button', { name: /try again/i }).click()
+  await expect(page.getByTestId('recommendation')).toBeVisible()
+})
+
 test('invalid input shows a friendly validation message (scenario 6)', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: /find the safest route/i }).click()
