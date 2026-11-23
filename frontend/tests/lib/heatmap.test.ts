@@ -119,11 +119,11 @@ describe('ramps', () => {
 
 describe('sliderLabel', () => {
   it('shows the hour offset and the real time in the origin zone', () => {
-    expect(sliderLabel('2026-11-24T21:00:00Z', 6, 'America/Chicago')).toBe('+6h · Wed 3:00 AM CST')
+    expect(sliderLabel('2026-11-24T21:00:00Z', 6, 'America/Chicago')).toBe('+6h · Tue 9:00 PM CST')
     expect(sliderLabel('2026-11-24T21:00:00Z', 0, 'America/Denver')).toBe('+0h · Tue 2:00 PM MST')
   })
   it('follows a daylight-saving change', () => {
-    // US clocks go forward on 2027-03-14 at 2 AM: +3h from 11 PM CST is 3 AM... CDT
-    expect(sliderLabel('2027-03-14T05:00:00Z', 3, 'America/Chicago')).toBe('+3h · Sun 4:00 AM CDT')
+    // 11 PM CST + 3h crosses the 2 AM spring-forward, so the clock reads 3 AM CDT.
+    expect(sliderLabel('2027-03-14T05:00:00Z', 3, 'America/Chicago')).toBe('+3h · Sun 3:00 AM CDT')
   })
 })

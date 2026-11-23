@@ -39,3 +39,9 @@ export function summaryTime(local: string, zone: string): string {
   const time = parsed.minute === 0 ? parsed.toFormat('h a') : parsed.toFormat('h:mm a')
   return `${parsed.toFormat('ccc')} ${time} ${parsed.offsetNameShort}`
 }
+
+/** "+6h · Tue 9:00 PM CST": hours after departure and the real time there, in the origin zone. */
+export function sliderLabel(startUtc: string, hour: number, zone: string): string {
+  const at = DateTime.fromISO(startUtc, { zone: 'utc' }).plus({ hours: hour }).setZone(zone)
+  return `+${hour}h · ${at.toFormat('ccc h:mm a')} ${at.offsetNameShort}`
+}
