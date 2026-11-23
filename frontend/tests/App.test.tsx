@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import App from '../src/App'
@@ -18,7 +19,11 @@ vi.mock('maplibre-gl', () => ({
 
 describe('App', () => {
   it('renders the map container and fits it to the continental US', () => {
-    const { unmount } = render(<App />)
+    const { unmount } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <App />
+      </QueryClientProvider>,
+    )
 
     expect(screen.getByTestId('map')).toBeInTheDocument()
     expect(screen.getByRole('complementary', { name: 'Trip planner' })).toBeInTheDocument()
