@@ -9,7 +9,14 @@ import pytest
 
 from core.alternatives import resample
 from core.checkpoints import EARTH_RADIUS_MI, haversine_mi
-from core.heatmap import corridor_cells, pack_heatmap, snap, snap_point
+from core.heatmap import (
+    PackedHeatmap,
+    corridor_cells,
+    heatmap_grid_deg,
+    pack_heatmap,
+    snap,
+    snap_point,
+)
 from core.models import Point, Weather
 from core.rules import load_rules
 
@@ -80,9 +87,52 @@ def test_corridor_cells_are_unique_and_sorted() -> None:
     assert cells == sorted(set(cells))
 
 
+# --- adaptive grid size: Open-Meteo bills one call per location, so long trips use coarse cells ---
+
+
+@pytest.mark.parametrize(
+    ("longest_mi", "deg"),
+    [(0, 0.2), (100, 0.2), (500, 0.2), (500.01, 0.4), (1000, 0.4), (1000.01, 0.8), (2050, 0.8)],
+)
+def test_grid_cell_size_grows_with_the_longest_route(longest_mi: float, deg: float) -> None:
+    assert heatmap_grid_deg(longest_mi, RULES) == deg
+
+
+def test_a_long_route_uses_coarser_cells_centred_on_that_grid() -> None:
+    seattle_to_chicago_ish: list[Point] = [(47.6, -122.3), (46.8, -100.7), (41.9, -87.6)]
+    cells = corridor_cells([seattle_to_chicago_ish], RULES)
+    assert cells
+    for lat, lon in cells:
+        assert lat / 0.8 == pytest.approx(round(lat / 0.8), abs=1e-6)  # multiple of 0.8
+        assert lon / 0.8 == pytest.approx(round(lon / 0.8), abs=1e-6)
+        assert lat * 10 == pytest.approx(round(lat * 10), abs=1e-6)  # still on the 0.1 grid
+
+
+@pytest.mark.parametrize(
+    "route",
+    [
+        [(39.74, -104.99), (41.14, -104.82)],  # Denver -> Cheyenne, ~100 mi
+        [(40.76, -111.89), (39.74, -104.99)],  # Salt Lake City -> Denver, ~370 mi straight line
+        [(41.88, -87.63), (32.78, -96.80)],  # Chicago -> Dallas, ~800 mi straight line
+        [(47.61, -122.33), (41.88, -87.63)],  # Seattle -> Chicago, ~1,700 mi straight line
+    ],
+)
+def test_no_trip_needs_more_than_300_corridor_locations(route: list[Point]) -> None:
+    assert len(corridor_cells([route], RULES)) <= 300
+
+
 # --- packing ---
 
 CELLS: list[Point] = [(35.0, -100.0), (35.2, -100.0)]
+
+
+def pack(
+    cells: list[Point],
+    hours: list[list[Weather | None]],
+    load_lb: float,
+    grid_deg: float = 0.2,
+) -> PackedHeatmap:
+    return pack_heatmap(cells, hours, load_lb, RULES, grid_deg=grid_deg)
 
 
 def decode(text: str, fmt: str, count: int) -> tuple[float, ...]:
@@ -93,8 +143,12 @@ def w(wind: float = 0.0, rain: float = 0.0, snow: float = 0.0) -> Weather:
     return Weather(wind_mph=wind, gust_mph=wind, rain_in_hr=rain, snow_in_hr=snow)
 
 
+def test_the_packed_grid_size_is_the_one_given_for_this_trip() -> None:
+    assert pack(CELLS, [[w(), w()]], 0, grid_deg=0.4).grid_deg == 0.4
+
+
 def test_cells_are_packed_as_little_endian_float32_lat_lon_pairs() -> None:
-    packed = pack_heatmap(CELLS, [[w(), w()]], 0, RULES)
+    packed = pack(CELLS, [[w(), w()]], 0)
     values = decode(packed.cells, "f", 4)
     assert values == pytest.approx((35.0, -100.0, 35.2, -100.0))
     assert packed.grid_deg == 0.2
@@ -106,21 +160,21 @@ def test_layers_are_hour_major_one_hour_is_a_contiguous_slice() -> None:
         [w(wind=30), w(wind=40)],  # hour 1
         [w(wind=50), w(wind=60)],  # hour 2
     ]
-    packed = pack_heatmap(CELLS, hours, 0, RULES)
+    packed = pack(CELLS, hours, 0)
     assert packed.hours == 3
     assert decode(packed.layers["wind"], "B", 6) == (10, 20, 30, 40, 50, 60)
 
 
 def test_risk_layer_holds_level_ordinals_with_load_rules_applied() -> None:
     hours = [[w(wind=40), w(wind=10)]]
-    heavy = pack_heatmap(CELLS, hours, 42_000, RULES)
-    light = pack_heatmap(CELLS, hours, 10_000, RULES)
+    heavy = pack(CELLS, hours, 42_000)
+    light = pack(CELLS, hours, 10_000)
     assert decode(heavy.layers["risk"], "B", 2) == (3, 0)  # Severe, Low
     assert decode(light.layers["risk"], "B", 2) == (2, 0)  # High, Low
 
 
 def test_missing_weather_uses_the_no_data_sentinels() -> None:
-    packed = pack_heatmap(CELLS, [[None, w(wind=10, rain=0.1, snow=0.5)]], 0, RULES)
+    packed = pack(CELLS, [[None, w(wind=10, rain=0.1, snow=0.5)]], 0)
     assert decode(packed.layers["risk"], "B", 2) == (255, 1)  # rain 0.1 / snow 0.5 = Moderate
     assert decode(packed.layers["wind"], "B", 2) == (255, 10)
     assert decode(packed.layers["rain"], "H", 2) == (65535, 10)
@@ -128,14 +182,14 @@ def test_missing_weather_uses_the_no_data_sentinels() -> None:
 
 
 def test_units_are_whole_mph_and_hundredths_of_an_inch_per_hour() -> None:
-    packed = pack_heatmap(CELLS, [[w(wind=38.4, rain=0.256, snow=1.0), w()]], 0, RULES)
+    packed = pack(CELLS, [[w(wind=38.4, rain=0.256, snow=1.0), w()]], 0)
     assert decode(packed.layers["wind"], "B", 2)[0] == 38
     assert decode(packed.layers["rain"], "H", 2)[0] == 26
     assert decode(packed.layers["snow"], "H", 2)[0] == 100
 
 
 def test_values_are_clipped_below_the_sentinels() -> None:
-    packed = pack_heatmap(CELLS, [[w(wind=300, rain=700, snow=900), w()]], 0, RULES)
+    packed = pack(CELLS, [[w(wind=300, rain=700, snow=900), w()]], 0)
     assert decode(packed.layers["wind"], "B", 2)[0] == 254
     assert decode(packed.layers["rain"], "H", 2)[0] == 65534
     assert decode(packed.layers["snow"], "H", 2)[0] == 65534
@@ -143,7 +197,7 @@ def test_values_are_clipped_below_the_sentinels() -> None:
 
 def test_payload_sizes_match_cells_times_hours() -> None:
     hours = [[w(), w()] for _ in range(49)]
-    packed = pack_heatmap(CELLS, hours, 0, RULES)
+    packed = pack(CELLS, hours, 0)
     assert packed.hours == 49
     assert len(base64.b64decode(packed.layers["risk"])) == 49 * 2
     assert len(base64.b64decode(packed.layers["rain"])) == 49 * 2 * 2
@@ -151,9 +205,9 @@ def test_payload_sizes_match_cells_times_hours() -> None:
 
 def test_every_hour_must_have_one_value_per_cell() -> None:
     with pytest.raises(ValueError, match="cell"):
-        pack_heatmap(CELLS, [[w()]], 0, RULES)
+        pack(CELLS, [[w()]], 0)
 
 
 def test_at_least_one_hour_is_required() -> None:
     with pytest.raises(ValueError, match="hour"):
-        pack_heatmap(CELLS, [], 0, RULES)
+        pack(CELLS, [], 0)

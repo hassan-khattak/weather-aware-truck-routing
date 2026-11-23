@@ -111,7 +111,11 @@ def valid_rules() -> dict[str, Any]:
         "departure": {"max_ahead_h": 48, "past_grace_min": 5, "long_range_note_h": 72},
         "weather_grid": {
             "checkpoint_deg": 0.1,
-            "heatmap_deg": 0.2,
+            "heatmap_tiers": [
+                {"max_mi_inclusive": 500, "deg": 0.2},
+                {"max_mi_inclusive": 1000, "deg": 0.4},
+                {"otherwise": True, "deg": 0.8},
+            ],
             "corridor_mi": 30,
             "forecast_ttl_s": 3600,
             "stale_ttl_s": 86400,
@@ -241,11 +245,43 @@ def test_top_level_must_be_a_mapping(tmp_path: Path) -> None:
         load_rules(path)
 
 
+def test_heatmap_tiers_parse_in_order() -> None:
+    tiers = parse_rules(valid_rules()).weather_grid.heatmap_tiers
+    assert [(t.max_mi_inclusive, t.otherwise, t.deg) for t in tiers] == [
+        (500, False, 0.2),
+        (1000, False, 0.4),
+        (None, True, 0.8),
+    ]
+
+
+def test_heatmap_tiers_must_end_with_an_otherwise_entry() -> None:
+    doc = valid_rules()
+    doc["weather_grid"]["heatmap_tiers"] = doc["weather_grid"]["heatmap_tiers"][:2]
+    with pytest.raises(RulesError, match="heatmap_tiers"):
+        parse_rules(doc)
+
+
+def test_a_heatmap_tier_needs_exactly_one_bound() -> None:
+    doc = valid_rules()
+    doc["weather_grid"]["heatmap_tiers"][0] = {"deg": 0.2}
+    with pytest.raises(RulesError, match="heatmap_tiers"):
+        parse_rules(doc)
+
+
+def test_heatmap_cell_size_must_be_a_multiple_of_the_checkpoint_grid() -> None:
+    # Cell centres must land on checkpoint grid points so both share one weather cache.
+    doc = valid_rules()
+    doc["weather_grid"]["heatmap_tiers"][0]["deg"] = 0.25
+    with pytest.raises(RulesError, match="checkpoint_deg"):
+        parse_rules(doc)
+
+
 def test_shipped_rules_yaml_is_valid_and_matches_the_spec() -> None:
     rules = load_rules(BACKEND_DIR / "rules.yaml")
     assert rules.thresholds.wind_mph[-1].from_ == 55
     assert rules.hours_of_service.max_driving_h == 11
     assert rules.heatmap.hours == 49
+    assert [t.deg for t in rules.weather_grid.heatmap_tiers] == [0.2, 0.4, 0.8]
 
 
 def test_rules_module_does_not_import_django_or_io_libraries() -> None:
