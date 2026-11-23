@@ -31,6 +31,7 @@ dev = [
     "hypothesis>=6.170.17",
     "respx>=0.23.1",
     "time-machine>=3.6.0",
+    "types-shapely>=2.2.0.20261122",
 ]
 
 [tool.pytest.ini_options]
@@ -55,4 +56,4 @@ strict = true
 django_settings_module = "config.settings"
 
 [tool.ruff.lint.isort]
-known-first-party = ["core", "api", "config", "providers", "places", "weather_grid"]
+known-first-party = ["core", "api", "config", "providers", "places", "weather_grid", "trips"]

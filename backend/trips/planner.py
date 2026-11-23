@@ -1,0 +1,94 @@
+"""Step 1 of a search: real truck routes with realistic ETAs (plan.md sections 3.3, 3.8, 5.2).
+
+Calls the routing provider, measures each route along its full geometry, chooses the checkpoint
+interval from the longest route, and builds each route's ETA plan (driving time, required stops,
+timeline). Nothing here draws or scores anything.
+"""
+
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Literal
+
+from api.validation import TripRequest
+from core.checkpoints import choose_interval, route_length_mi
+from core.eta import EtaPlan, build_eta_plan
+from core.rules import Rules
+from providers.base import RawRoute, RoutingProvider, vehicle_for_load
+
+MAX_ROUTES = 3  # the brief asks for up to three route options
+
+
+@dataclass(frozen=True)
+class PlannedRoute:
+    id: str
+    order: int
+    source: Literal["api", "generated"]
+    raw: RawRoute  # full-resolution geometry, anchors, road names
+    length_mi: float  # measured along the full geometry (what checkpoints are placed on)
+    plan: EtaPlan
+    long_range_forecast: bool  # the trip reaches past the reliable part of the forecast
+
+
+@dataclass(frozen=True)
+class Trip:
+    request: TripRequest
+    interval_mi: float
+    routes: tuple[PlannedRoute, ...]
+    notes: tuple[str, ...]
+
+
+def route_id(order: int) -> str:
+    return chr(ord("A") + order)
+
+
+def distinct_routes_note(count: int) -> str | None:
+    """Honest wording when fewer than three distinct routes exist."""
+    if count >= MAX_ROUTES:
+        return None
+    if count == 1:
+        return "Only 1 truck route found for this trip."
+    return f"{count} distinct truck routes found for this trip."
+
+
+def plan_route(
+    order: int,
+    raw: RawRoute,
+    request: TripRequest,
+    rules: Rules,
+    now: datetime,
+    source: Literal["api", "generated"] = "api",
+) -> PlannedRoute:
+    length = route_length_mi(raw.points)
+    plan = build_eta_plan(raw.anchors, length, request.departure.utc, rules)
+    arrival = request.departure.utc + timedelta(seconds=plan.total_s)
+    limit = now + timedelta(hours=rules.departure.long_range_note_h)
+    return PlannedRoute(
+        id=route_id(order),
+        order=order,
+        source=source,
+        raw=raw,
+        length_mi=length,
+        plan=plan,
+        long_range_forecast=arrival > limit,
+    )
+
+
+def plan_trip(request: TripRequest, provider: RoutingProvider, rules: Rules, now: datetime) -> Trip:
+    """Plan the trip. Raises NoRoute / ProviderUnavailable from the provider."""
+    vehicle = vehicle_for_load(request.load_lb, rules)
+    raw_routes = provider.routes(
+        (request.origin.lat, request.origin.lon),
+        (request.destination.lat, request.destination.lon),
+        request.departure.utc,
+        vehicle,
+    )[:MAX_ROUTES]
+    routes = tuple(
+        plan_route(order, raw, request, rules, now) for order, raw in enumerate(raw_routes)
+    )
+    note = distinct_routes_note(len(routes))
+    return Trip(
+        request=request,
+        interval_mi=choose_interval(max(r.length_mi for r in routes), rules),
+        routes=routes,
+        notes=(note,) if note else (),
+    )
