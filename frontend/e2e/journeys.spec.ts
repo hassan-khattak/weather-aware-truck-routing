@@ -89,3 +89,74 @@ test('clicking a checkpoint row pins its tooltip', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(page.locator('.maplibregl-popup')).toHaveCount(0)
 })
+
+async function truckPosition(page: Page) {
+  return page.evaluate(() => {
+    const map = (window as unknown as { __truckMap: TruckMap }).__truckMap
+    const feature = map.querySourceFeatures('truck')[0]
+    return feature ? (feature.geometry as { coordinates: number[] }).coordinates : null
+  })
+}
+
+interface TruckMap {
+  querySourceFeatures(source: string): { geometry: unknown }[]
+}
+
+test('moving the slider to +12h updates the label and moves the truck, with no network calls', async ({
+  page,
+}) => {
+  await runSample(page)
+  const slider = page.getByRole('slider', { name: 'Hours after departure' })
+  await expect(slider).toBeVisible()
+  await expect(page.getByText(/^\+0h · /)).toBeVisible()
+  await expect.poll(() => truckPosition(page)).not.toBeNull()
+  const before = await truckPosition(page)
+
+  const requests: string[] = []
+  page.on('request', (request) => requests.push(request.url()))
+
+  await slider.fill('12')
+  await expect(page.getByText(/^\+12h · /)).toBeVisible()
+  await expect.poll(() => truckPosition(page)).not.toEqual(before)
+
+  // Keyboard: Shift+Right is six hours.
+  await slider.focus()
+  await page.keyboard.press('Shift+ArrowRight')
+  await expect(page.getByText(/^\+18h · /)).toBeVisible()
+
+  expect(requests).toEqual([]) // dragging the slider never touches the network
+})
+
+test('Play advances the hour, can be paused, and uses no network or long frames', async ({
+  page,
+}) => {
+  await runSample(page)
+  await expect(page.getByRole('slider')).toBeVisible()
+  const requests: string[] = []
+  page.on('request', (request) => requests.push(request.url()))
+
+  // Record the time between animation frames while Play runs.
+  await page.evaluate(() => {
+    const w = window as unknown as { __frames: number[] }
+    w.__frames = []
+    let last = performance.now()
+    const loop = () => {
+      const now = performance.now()
+      w.__frames.push(now - last)
+      last = now
+      requestAnimationFrame(loop)
+    }
+    requestAnimationFrame(loop)
+  })
+  await page.getByRole('button', { name: /play/i }).click()
+  await expect(page.getByText(/^\+[3-9]h · /)).toBeVisible()
+  await page.getByRole('button', { name: /pause/i }).click()
+  await expect(page.getByRole('button', { name: /play/i })).toBeVisible()
+
+  const frames = await page.evaluate(() => (window as unknown as { __frames: number[] }).__frames)
+  const sorted = [...frames].sort((a, b) => a - b)
+  const p95 = sorted[Math.floor(sorted.length * 0.95)]
+  console.log(`Play frames: ${frames.length}, p95 ${p95.toFixed(1)} ms (software rendering)`)
+  expect(p95).toBeLessThan(100) // a smoke check only; real hardware is measured by hand
+  expect(requests).toEqual([])
+})
