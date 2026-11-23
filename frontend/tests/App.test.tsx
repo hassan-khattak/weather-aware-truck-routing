@@ -71,8 +71,16 @@ vi.mock('maplibre-gl', () => {
       fake.layers.push(layer.id)
     }
     getSource(id: string) {
-      return { setData: (data: unknown) => (fake.data[id] = data) }
+      return {
+        setData: (data: unknown) => (fake.data[id] = data),
+        setCoordinates() {},
+        play() {},
+        pause() {},
+      }
     }
+    setLayoutProperty() {}
+    triggerRepaint() {}
+    once() {}
     setPaintProperty(layer: string, name: string, value: unknown) {
       ;(fake.paint[layer] ??= {})[name] = value
     }
@@ -163,6 +171,7 @@ describe('App', () => {
     renderApp()
     fake.handlers['load']() // the map style has loaded
     expect(fake.sources).toEqual([
+      'heatmap',
       'checkpoint-highlight',
       'route-markers',
       'checkpoint-dots',
@@ -171,6 +180,7 @@ describe('App', () => {
       'route-C',
     ])
     expect(fake.layers).toEqual([
+      'heatmap',
       'checkpoint-highlight',
       'route-markers',
       'checkpoint-dots',
@@ -201,8 +211,8 @@ describe('App', () => {
     expect(fake.paint['route-line-B']['line-gradient']).toBeNull()
 
     // Nothing was ever added again.
-    expect(fake.sources).toHaveLength(6) // three checkpoint sources, three routes
-    expect(fake.layers).toHaveLength(6)
+    expect(fake.sources).toHaveLength(7) // heatmap, three checkpoint sources, three routes
+    expect(fake.layers).toHaveLength(7)
   })
 
   it('syncs the checkpoint list with the map: a row pins the tooltip and flies there', async () => {

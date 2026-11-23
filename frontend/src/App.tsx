@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTrip } from './api/hooks'
 import { serverFieldErrors } from './lib/serverErrors'
+import { HeatmapControls } from './map/HeatmapControls'
 import { MapView } from './map/MapView'
 import { Panel } from './panel/Panel'
 import { CheckpointList } from './panel/CheckpointList'
@@ -80,6 +81,7 @@ export default function App() {
           activeCheckpoint={activeCheckpoint}
           onPickCheckpoint={setActiveCheckpoint}
         />
+        {risk.data && <HeatmapControls />}
       </div>
     </main>
   )

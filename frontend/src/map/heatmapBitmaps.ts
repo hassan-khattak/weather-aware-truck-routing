@@ -27,6 +27,8 @@ type Image = CanvasImageSource
  */
 export class HeatmapBitmaps {
   readonly geometry: Geometry
+  /** The last forecast hour (hours are numbered from 0). */
+  readonly maxHour: number
   private readonly data: DecodedHeatmap
   private readonly schedule: Scheduler
   private readonly makeSurface: SurfaceFactory
@@ -45,6 +47,7 @@ export class HeatmapBitmaps {
   ) {
     this.data = data
     this.geometry = canvasGeometry(data)
+    this.maxHour = data.hours - 1
     this.schedule = options.schedule ?? idleScheduler
     this.makeSurface = options.makeSurface ?? defaultSurface
     this.toBitmap = options.toBitmap ?? ((source) => createImageBitmap(source as ImageBitmapSource))

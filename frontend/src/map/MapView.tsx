@@ -6,6 +6,10 @@ import { config, US_BOUNDS } from '../config'
 import type { Checkpoint } from '../api/types'
 import { sharedRoadNote } from '../lib/checkpointInfo'
 import { CheckpointLayers, HIGHLIGHT_LAYER } from './checkpointLayers'
+import { decodeHeatmap } from '../lib/heatmapDecode'
+import { useUiStore } from '../state/uiStore'
+import { HeatmapBitmaps } from './heatmapBitmaps'
+import { HeatmapLayer, type HeatmapMap } from './heatmapLayer'
 import { RouteLayers, type Hover, type MapLike } from './routeLayers'
 import { checkpointTooltip, type CheckpointTooltip } from './tooltip'
 
@@ -69,6 +73,7 @@ export function MapView({
   const container = useRef<HTMLDivElement>(null)
   const layers = useRef<RouteLayers | null>(null)
   const mapRef = useRef<Map | null>(null)
+  const heat = useRef<HeatmapLayer | null>(null)
   const checkpoints = useRef<CheckpointLayers | null>(null)
   const tooltip = useRef<CheckpointTooltip | null>(null)
   const latestOnSelect = useRef(onSelect)
@@ -96,6 +101,8 @@ export function MapView({
     })
     map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     mapRef.current = map
+    const heatmap = new HeatmapLayer(map as unknown as HeatmapMap)
+    heat.current = heatmap
     const tip = checkpointTooltip(map)
     tooltip.current = tip
     const showCheckpoint = (idx: number | null) => {
@@ -135,12 +142,14 @@ export function MapView({
     // Lets the browser tests inspect the map; absent from production builds.
     if (import.meta.env.DEV) (window as unknown as { __truckMap?: unknown }).__truckMap = map
     map.on('load', () => {
+      heatmap.ready() // first, so it sits below everything added after it
       checkpointLayers.ready()
       routeLayers.ready()
     })
     return () => {
       layers.current = null
       checkpoints.current = null
+      heat.current = null
       mapRef.current = null
       tooltip.current = null
       map.remove()
@@ -153,6 +162,32 @@ export function MapView({
   useEffect(() => {
     layers.current?.update({ routes: routeList, risk: riskList, selectedId })
   }, [routeList, riskList, selectedId])
+
+  // The weather glow: decoded once per response, painted once, then only re-drawn per hour.
+  const heatmapData = risk?.heatmap
+  useEffect(() => {
+    const layer = heat.current
+    if (!layer || !heatmapData) return
+    const decoded = decodeHeatmap(heatmapData)
+    if (decoded.cellCount === 0) return // nothing to draw (no weather corridor)
+    const bitmaps = new HeatmapBitmaps(decoded)
+    const state = useUiStore.getState()
+    layer.setBitmaps(bitmaps)
+    layer.setLayer(state.heatmapLayer)
+    layer.setVisible(state.heatmapVisible)
+    layer.show(state.hour)
+    // Time, layer and visibility changes go straight to the map; React does not re-render.
+    const unsubscribe = useUiStore.subscribe((now, before) => {
+      if (now.heatmapLayer !== before.heatmapLayer) layer.setLayer(now.heatmapLayer)
+      if (now.heatmapVisible !== before.heatmapVisible) layer.setVisible(now.heatmapVisible)
+      if (now.hour !== before.hour) layer.show(now.hour)
+    })
+    return () => {
+      unsubscribe()
+      layer.setBitmaps(null)
+      bitmaps.dispose()
+    }
+  }, [heatmapData])
 
   // Checkpoints belong to the selected route only.
   const selectedRoute = routeList.find((r) => r.id === selectedId)
