@@ -9,6 +9,7 @@ dependencies = [
     "gunicorn>=22",
     "pydantic>=2.14.4",
     "pyyaml>=6.0.4",
+    "httpx>=0.28.1",
 ]
 
 [dependency-groups]
@@ -24,6 +25,7 @@ dev = [
     "pre-commit>=4.7.0",
     "pytest-cov>=7.1.0",
     "hypothesis>=6.170.17",
+    "respx>=0.23.1",
 ]
 
 [tool.pytest.ini_options]
@@ -48,4 +50,4 @@ strict = true
 django_settings_module = "config.settings"
 
 [tool.ruff.lint.isort]
-known-first-party = ["core", "api", "config"]
+known-first-party = ["core", "api", "config", "providers"]
