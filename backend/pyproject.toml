@@ -23,6 +23,7 @@ dev = [
     "types-pyyaml>=6.0.12.20261122",
     "pre-commit>=4.7.0",
     "pytest-cov>=7.1.0",
+    "hypothesis>=6.170.17",
 ]
 
 [tool.pytest.ini_options]
