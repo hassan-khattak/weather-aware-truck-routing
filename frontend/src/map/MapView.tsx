@@ -104,16 +104,29 @@ export function MapView({
       else tip.hide()
     }
     // Created before the route lines so the lines can be inserted below the dots.
+    // A dot sits on its route line; over a dot only the checkpoint tooltip shows.
+    const routePopup = popupHover(map)
+    let overDot = false
+    const routeHover: Hover = {
+      show: (...args) => {
+        if (!overDot) routePopup.show(...args)
+      },
+      hide: () => routePopup.hide(),
+    }
     const checkpointLayers = new CheckpointLayers(map as unknown as MapLike, {
       // Hovering previews a checkpoint; leaving returns to the pinned one, if any.
-      onHover: (idx) => showCheckpoint(idx ?? shown.current.active),
+      onHover: (idx) => {
+        overDot = idx !== null
+        if (overDot) routePopup.hide()
+        showCheckpoint(idx ?? shown.current.active)
+      },
       onPick: (idx) => latestOnPick.current(idx),
     })
     checkpoints.current = checkpointLayers
     const routeLayers = new RouteLayers(
       map as unknown as MapLike,
       (id) => latestOnSelect.current(id),
-      popupHover(map),
+      routeHover,
       fitPadding,
       fitDuration,
       HIGHLIGHT_LAYER,
