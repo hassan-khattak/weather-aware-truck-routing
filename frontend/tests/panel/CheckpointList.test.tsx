@@ -45,6 +45,13 @@ describe('CheckpointList', () => {
     expect(onPick).toHaveBeenCalledWith(0)
   })
 
+  it('announces the active checkpoint like the map tooltip does', () => {
+    render(<CheckpointList routeId="B" checkpoints={POINTS} activeIdx={1} onPick={vi.fn()} />)
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'CP 2 · Mile 25 · I-40 W near Amarillo, TX. ETA Tue 8:40 PM CST. Wind 5 mph (gusts 9) · Rain 0 in/hr · Snow 0 in/hr. 🟠 HIGH',
+    )
+  })
+
   it('can show only High and above', async () => {
     render(<CheckpointList routeId="B" checkpoints={POINTS} activeIdx={null} onPick={vi.fn()} />)
     await userEvent.click(screen.getByRole('checkbox', { name: 'Show only High and above' }))

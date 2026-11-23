@@ -348,6 +348,43 @@ describe('accessibility', () => {
     await expectNoViolations(container)
   })
 
+  it('has no axe violations with the checkpoint list, a pinned checkpoint and the overlay open', async () => {
+    stubApi('A', true)
+    const { container } = renderApp()
+    fake.handlers['load']()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+    const list = await screen.findByRole('region', { name: 'Checkpoints on Route A' })
+    await userEvent.click(within(list).getByRole('button', { name: /CP 2 · Mile 50/ }))
+    await userEvent.click(screen.getByRole('button', { name: /^Weather/ }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Wind' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Show only High and above' }))
+    await expectNoViolations(container)
+  })
+
+  it('has no axe violations when only the weather step fails', async () => {
+    const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status })
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) =>
+        url === '/api/v1/routes'
+          ? json(makeRoutes())
+          : json(
+              {
+                error: {
+                  code: 'PROVIDER_UNAVAILABLE',
+                  message: 'Weather/route data is temporarily unavailable.',
+                },
+              },
+              503,
+            ),
+      ),
+    )
+    const { container } = renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+    await screen.findByText(/weather risk is unknown/i, undefined, { timeout: 3000 })
+    await expectNoViolations(container)
+  })
+
   it('has no axe violations while showing form errors', async () => {
     const { container } = renderApp()
     await userEvent.click(screen.getByRole('button', { name: /find the safest route/i }))

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Checkpoint } from '../api/types'
-import { etaText, placeText } from '../lib/checkpointInfo'
+import { etaText, placeText, tooltipLines } from '../lib/checkpointInfo'
 import { HIGH_AND_ABOVE, LEVELS } from '../levels'
 
 interface Props {
@@ -22,8 +22,13 @@ export function CheckpointList({ routeId, checkpoints, activeIdx, onPick }: Prop
   }, [activeIdx])
 
   if (checkpoints.length === 0) return null
+  const active = checkpoints.find((cp) => cp.idx === activeIdx)
   return (
     <section aria-label={`Checkpoints on Route ${routeId}`} className="mt-4">
+      {/* What the map tooltip shows, for people who cannot see it. */}
+      <p role="status" className="sr-only">
+        {active ? tooltipLines(active).join('. ') : ''}
+      </p>
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="text-xs font-semibold tracking-wide text-muted uppercase">
           Checkpoints · Route {routeId}
@@ -42,17 +47,17 @@ export function CheckpointList({ routeId, checkpoints, activeIdx, onPick }: Prop
       ) : (
         <ol className="mt-2 max-h-72 space-y-1 overflow-y-auto">
           {rows.map((cp) => {
-            const active = cp.idx === activeIdx
+            const isActive = cp.idx === activeIdx
             const level = LEVELS[cp.level]
             return (
               <li key={cp.idx}>
                 <button
                   type="button"
-                  ref={active ? activeRow : undefined}
-                  aria-pressed={active}
+                  ref={isActive ? activeRow : undefined}
+                  aria-pressed={isActive}
                   onClick={() => onPick(cp.idx)}
                   className={`block w-full rounded-md border px-2 py-1.5 text-left text-xs focus:ring-2 focus:ring-accent/50 focus:outline-none ${
-                    active ? 'border-accent bg-accent/10' : 'border-line'
+                    isActive ? 'border-accent bg-accent/10' : 'border-line'
                   }`}
                 >
                   <span className="flex items-center justify-between gap-2">
