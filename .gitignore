@@ -39,6 +39,5 @@ crash.log
 .vscode/
 *.swp
 
-# Provider lock files: add once generated for linux_amd64 + darwin_arm64 (see infra/)
-.terraform.lock.hcl
+# Provider lock files ARE committed (generated for linux_amd64, darwin_arm64, darwin_amd64).
 db.sqlite3
