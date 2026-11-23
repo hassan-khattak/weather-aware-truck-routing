@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from providers.mode import validate_providers_mode
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -24,6 +26,9 @@ ALLOWED_HOSTS = [h for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1
 # TomTom routing and search. The key stays server-side; the browser never sees it.
 TOMTOM_API_KEY = os.environ.get("TOM_TOM_API_KEY", "")
 
+# `live` (real services) or `fixtures` (recorded data; tests only, refused when DEBUG is off).
+PROVIDERS_MODE = validate_providers_mode(os.environ.get("PROVIDERS_MODE", "live"), debug=DEBUG)
+
 # Git commit of the running build; reported by /api/v1/health.
 GIT_SHA = os.environ.get("GIT_SHA", "dev")
 
@@ -36,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "api",
     "places",
+    "providers",
 ]
 
 MIDDLEWARE = [
