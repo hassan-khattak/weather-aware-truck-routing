@@ -87,12 +87,20 @@ DATABASES = {
 
 # Database-backed cache (Postgres); moving to Redis later is a settings change.
 # `locmem` is for single-process runs without a cache table (the browser tests).
+# Django keeps only 300 entries by default and culls the rest. The weather cache holds one entry
+# per grid cell (two keys each), so a single long trip would evict every other trip's weather;
+# keep plenty (a few thousand cells per busy day, each entry a few KB).
+_CACHE_OPTIONS = {"MAX_ENTRIES": 20000, "CULL_FREQUENCY": 4}
 CACHES = {
-    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "OPTIONS": _CACHE_OPTIONS,
+    }
     if os.environ.get("CACHE_BACKEND") == "locmem"
     else {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_cache",
+        "OPTIONS": _CACHE_OPTIONS,
     }
 }
 
