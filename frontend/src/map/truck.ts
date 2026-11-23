@@ -35,12 +35,13 @@ export function truckAt(
   line: LngLat[],
   elapsedS: number,
   windowS: number = Infinity,
+  lengths?: number[],
 ): Truck {
   if (elapsedS >= route.total_s) {
     return { state: 'arrived', mile: route.distance_mi, position: line[line.length - 1] ?? [0, 0] }
   }
   const { mile, parked } = mileAt(route.timeline, elapsedS)
-  const position = pointAtMile(line, mile, route.distance_mi)
+  const position = pointAtMile(line, mile, route.distance_mi, lengths)
   if (elapsedS >= windowS) return { state: 'beyond-window', mile, position }
   return { state: parked ? 'parked' : 'driving', mile, position }
 }

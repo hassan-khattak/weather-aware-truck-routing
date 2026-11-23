@@ -37,16 +37,27 @@ export function checkpointFeatures(checkpoints: Checkpoint[]): FeatureCollection
   }
 }
 
-/** The point `mile` miles along a line, scaling the line's own length to the route distance
- *  (the drawn line is simplified, so its length is only approximately the route's). */
-export function pointAtMile(line: LngLat[], mile: number, totalMi: number): LngLat {
-  if (line.length === 0) return [0, 0]
+/** Miles from the start of the line to each of its points (computed once per route). */
+export function cumulativeMiles(line: LngLat[]): number[] {
   const lengths = [0]
   for (let i = 1; i < line.length; i++) {
     const [lon1, lat1] = line[i - 1]
     const [lon2, lat2] = line[i]
     lengths.push(lengths[i - 1] + haversineMi({ lat: lat1, lon: lon1 }, { lat: lat2, lon: lon2 }))
   }
+  return lengths
+}
+
+/** The point `mile` miles along a line, scaling the line's own length to the route distance
+ *  (the drawn line is simplified, so its length is only approximately the route's). Pass
+ *  `lengths` (from `cumulativeMiles`) when asking many times for the same line. */
+export function pointAtMile(
+  line: LngLat[],
+  mile: number,
+  totalMi: number,
+  lengths: number[] = cumulativeMiles(line),
+): LngLat {
+  if (line.length === 0) return [0, 0]
   const total = lengths[lengths.length - 1]
   if (total === 0 || totalMi <= 0) return line[0]
   const target = Math.min(Math.max(mile / totalMi, 0), 1) * total

@@ -7,7 +7,12 @@ import type { Checkpoint } from '../api/types'
 import { sharedRoadNote } from '../lib/checkpointInfo'
 import { CheckpointLayers, HIGHLIGHT_LAYER } from './checkpointLayers'
 import { decodeHeatmap } from '../lib/heatmapDecode'
+import { layerId, ROUTE_IDS } from './routeLayers'
 import { useUiStore } from '../state/uiStore'
+import { cellAt, type DecodedHeatmap } from '../lib/heatmapDecode'
+import { heatmapHoverLines } from '../lib/heatmapHover'
+import { TruckLayer } from './truckLayer'
+import { DOT_LAYER } from './checkpointLayers'
 import { HeatmapBitmaps } from './heatmapBitmaps'
 import { HeatmapLayer, type HeatmapMap } from './heatmapLayer'
 import { RouteLayers, type Hover, type MapLike } from './routeLayers'
@@ -74,6 +79,8 @@ export function MapView({
   const layers = useRef<RouteLayers | null>(null)
   const mapRef = useRef<Map | null>(null)
   const heat = useRef<HeatmapLayer | null>(null)
+  const truck = useRef<TruckLayer | null>(null)
+  const decoded = useRef<{ data: DecodedHeatmap; tz: string } | null>(null)
   const checkpoints = useRef<CheckpointLayers | null>(null)
   const tooltip = useRef<CheckpointTooltip | null>(null)
   const latestOnSelect = useRef(onSelect)
@@ -103,6 +110,25 @@ export function MapView({
     mapRef.current = map
     const heatmap = new HeatmapLayer(map as unknown as HeatmapMap)
     heat.current = heatmap
+    const truckLayer = new TruckLayer(map as unknown as MapLike)
+    truck.current = truckLayer
+    const valuePopup = popupHover(map)
+    // Hovering the glow (not a route or a dot) shows the weather values of the cell below.
+    map.on('mousemove', (event) => {
+      const data = decoded.current
+      const state = useUiStore.getState()
+      const onFeature = map.queryRenderedFeatures(event.point, {
+        layers: [DOT_LAYER, ...ROUTE_IDS.map(layerId)].filter((id) => map.getLayer(id)),
+      })
+      const cell =
+        data && state.heatmapVisible && !onFeature.length
+          ? cellAt(data.data, event.lngLat.lng, event.lngLat.lat)
+          : null
+      if (cell === null || !data) return valuePopup.hide()
+      const hour = Math.min(Math.max(Math.round(state.hour), 0), data.data.hours - 1)
+      valuePopup.show('heatmap', event.lngLat, heatmapHoverLines(data.data, hour, cell, data.tz))
+    })
+    map.getCanvas().addEventListener('mouseleave', () => valuePopup.hide())
     const tip = checkpointTooltip(map)
     tooltip.current = tip
     const showCheckpoint = (idx: number | null) => {
@@ -145,11 +171,14 @@ export function MapView({
       heatmap.ready() // first, so it sits below everything added after it
       checkpointLayers.ready()
       routeLayers.ready()
+      truckLayer.ready() // last: the truck is drawn above everything
     })
     return () => {
       layers.current = null
       checkpoints.current = null
       heat.current = null
+      truck.current = null
+      decoded.current = null
       mapRef.current = null
       tooltip.current = null
       map.remove()
@@ -163,34 +192,46 @@ export function MapView({
     layers.current?.update({ routes: routeList, risk: riskList, selectedId })
   }, [routeList, riskList, selectedId])
 
+  const tz = routes?.departure.tz ?? 'America/Chicago'
+
   // The weather glow: decoded once per response, painted once, then only re-drawn per hour.
   const heatmapData = risk?.heatmap
   useEffect(() => {
     const layer = heat.current
     if (!layer || !heatmapData) return
-    const decoded = decodeHeatmap(heatmapData)
-    if (decoded.cellCount === 0) return // nothing to draw (no weather corridor)
-    const bitmaps = new HeatmapBitmaps(decoded)
+    const data = decodeHeatmap(heatmapData)
+    if (data.cellCount === 0) return // nothing to draw (no weather corridor)
+    const bitmaps = new HeatmapBitmaps(data)
+    decoded.current = { data, tz }
     const state = useUiStore.getState()
     layer.setBitmaps(bitmaps)
     layer.setLayer(state.heatmapLayer)
     layer.setVisible(state.heatmapVisible)
     layer.show(state.hour)
+    truck.current?.show(state.hour)
     // Time, layer and visibility changes go straight to the map; React does not re-render.
     const unsubscribe = useUiStore.subscribe((now, before) => {
       if (now.heatmapLayer !== before.heatmapLayer) layer.setLayer(now.heatmapLayer)
       if (now.heatmapVisible !== before.heatmapVisible) layer.setVisible(now.heatmapVisible)
-      if (now.hour !== before.hour) layer.show(now.hour)
+      if (now.hour !== before.hour) {
+        layer.show(now.hour)
+        truck.current?.show(now.hour)
+      }
     })
     return () => {
       unsubscribe()
+      decoded.current = null
       layer.setBitmaps(null)
       bitmaps.dispose()
     }
-  }, [heatmapData])
+  }, [heatmapData, tz])
 
   // Checkpoints belong to the selected route only.
   const selectedRoute = routeList.find((r) => r.id === selectedId)
+  useEffect(() => {
+    // The truck appears once there is weather (the forecast window is its time limit).
+    truck.current?.setRoute(heatmapData ? selectedRoute : undefined, (heatmapData?.hours ?? 1) - 1)
+  }, [selectedRoute, heatmapData])
   const selectedRisk = riskList?.find((r) => r.id === selectedId)
   useEffect(() => {
     checkpoints.current?.update({

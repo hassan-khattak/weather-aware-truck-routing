@@ -87,7 +87,13 @@ vi.mock('maplibre-gl', () => {
     moveLayer() {}
     fitBounds() {}
     getCanvas() {
-      return { style: { cursor: '' } }
+      return { style: { cursor: '' }, addEventListener() {} }
+    }
+    queryRenderedFeatures() {
+      return []
+    }
+    getLayer() {
+      return {}
     }
   }
   class Popup {
@@ -178,6 +184,7 @@ describe('App', () => {
       'route-A',
       'route-B',
       'route-C',
+      'truck',
     ])
     expect(fake.layers).toEqual([
       'heatmap',
@@ -187,6 +194,7 @@ describe('App', () => {
       'route-line-A',
       'route-line-B',
       'route-line-C',
+      'truck',
     ])
 
     await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
@@ -211,8 +219,8 @@ describe('App', () => {
     expect(fake.paint['route-line-B']['line-gradient']).toBeNull()
 
     // Nothing was ever added again.
-    expect(fake.sources).toHaveLength(7) // heatmap, three checkpoint sources, three routes
-    expect(fake.layers).toHaveLength(7)
+    expect(fake.sources).toHaveLength(8) // heatmap, three checkpoint sources, three routes, the truck
+    expect(fake.layers).toHaveLength(8)
   })
 
   it('syncs the checkpoint list with the map: a row pins the tooltip and flies there', async () => {
