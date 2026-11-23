@@ -59,3 +59,11 @@ class Weather:
     gust_mph: float
     rain_in_hr: float
     snow_in_hr: float
+
+
+@dataclass(frozen=True)
+class Classification:
+    """A checkpoint's final level and the human-readable reasons behind it."""
+
+    level: Level
+    reasons: tuple[str, ...]
