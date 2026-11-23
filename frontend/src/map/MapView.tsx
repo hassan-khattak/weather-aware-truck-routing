@@ -78,6 +78,8 @@ export function MapView({ routes, risk, selectedId, onSelect }: Props) {
       fitDuration,
     )
     layers.current = routeLayers
+    // Lets the browser tests inspect the map; absent from production builds.
+    if (import.meta.env.DEV) (window as unknown as { __truckMap?: unknown }).__truckMap = map
     map.on('load', () => routeLayers.ready())
     return () => {
       layers.current = null

@@ -86,8 +86,11 @@ DATABASES = {
 }
 
 # Database-backed cache (Postgres); moving to Redis later is a settings change.
+# `locmem` is for single-process runs without a cache table (the browser tests).
 CACHES = {
-    "default": {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    if os.environ.get("CACHE_BACKEND") == "locmem"
+    else {
         "BACKEND": "django.core.cache.backends.db.DatabaseCache",
         "LOCATION": "django_cache",
     }

@@ -5,6 +5,8 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // MapLibre spawns its own worker; pre-bundling breaks the worker URL in dev.
+  optimizeDeps: { exclude: ['maplibre-gl'] },
   server: {
     host: true,
     port: 5173,
