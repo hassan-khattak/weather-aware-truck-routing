@@ -121,7 +121,7 @@ def test_risk_layer_holds_level_ordinals_with_load_rules_applied() -> None:
 
 def test_missing_weather_uses_the_no_data_sentinels() -> None:
     packed = pack_heatmap(CELLS, [[None, w(wind=10, rain=0.1, snow=0.5)]], 0, RULES)
-    assert decode(packed.layers["risk"], "B", 2) == (255, 0)
+    assert decode(packed.layers["risk"], "B", 2) == (255, 1)  # rain 0.1 / snow 0.5 = Moderate
     assert decode(packed.layers["wind"], "B", 2) == (255, 10)
     assert decode(packed.layers["rain"], "H", 2) == (65535, 10)
     assert decode(packed.layers["snow"], "H", 2) == (65535, 50)
