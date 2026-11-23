@@ -68,7 +68,7 @@ export function makeRisk(recommended = 'A', ids: string[] = ['A', 'B']): RiskRes
     recommendation: {
       route_id: recommended,
       ranking: ids,
-      reason: '0 Severe mi vs 25 on Route B; +18 min',
+      reason: '0 Severe mi vs 25 on Route X; +18 min',
       all_unsafe: false,
       all_clear: false,
     },

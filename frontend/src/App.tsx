@@ -2,6 +2,7 @@ import { useTrip } from './api/hooks'
 import { serverFieldErrors } from './lib/serverErrors'
 import { MapView } from './map/MapView'
 import { Panel } from './panel/Panel'
+import { RouteCards } from './panel/RouteCards'
 import { SearchStatus } from './panel/SearchStatus'
 import { TripForm } from './panel/TripForm'
 import { TripSummary } from './panel/TripSummary'
@@ -28,6 +29,14 @@ export default function App() {
           <TripForm onSubmit={submit} serverErrors={serverFieldErrors(routes.error)} />
         </div>
         <SearchStatus searched={request !== null} routes={routes} risk={risk} />
+        {routes.data && (
+          <RouteCards
+            trip={routes.data}
+            risk={risk.data}
+            selectedId={selectedId}
+            onSelect={selectRoute}
+          />
+        )}
       </Panel>
       <div className="relative min-w-0 flex-1">
         <MapView

@@ -192,4 +192,34 @@ describe('App', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('form', { name: 'Plan a trip' })).toBeVisible() // ready to fix
   })
+
+  it('keeps the cards and the map selection in sync', async () => {
+    stubApi('B')
+    renderApp()
+    fake.handlers['load']()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+
+    // Risk arrives: the recommended route (B) is selected on the card and on the map.
+    const cardB = await screen.findByRole('button', { name: /^Route B/ })
+    await waitFor(() => expect(cardB).toHaveAttribute('aria-pressed', 'true'))
+    expect(screen.getByTestId('recommendation')).toHaveTextContent('Recommended: Route B')
+    expect(Array.isArray(fake.paint['route-line-B']['line-gradient'])).toBe(true)
+
+    // Clicking card A selects it on the card list and on the map.
+    await userEvent.click(screen.getByRole('button', { name: /^Route A/ }))
+    expect(screen.getByRole('button', { name: /^Route A/ })).toHaveAttribute('aria-pressed', 'true')
+    await waitFor(() =>
+      expect(Array.isArray(fake.paint['route-line-A']['line-gradient'])).toBe(true),
+    )
+    expect(fake.paint['route-line-B']['line-gradient']).toBeNull()
+
+    // Clicking the line on the map selects the card.
+    fake.handlers['click:route-line-B']()
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /^Route B/ })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      ),
+    )
+  })
 })
