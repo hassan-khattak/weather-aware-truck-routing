@@ -59,6 +59,7 @@ export default function App() {
             <RouteCards
               trip={routes.data}
               risk={risk.data}
+              riskFailed={risk.isError}
               selectedId={selectedId}
               onSelect={selectRoute}
             />

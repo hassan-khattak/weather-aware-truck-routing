@@ -4,6 +4,10 @@ import type { RiskResponse, RoutesResponse } from '../api/types'
 import { relativeAge } from '../lib/age'
 import { totalCheckpoints } from '../lib/checkpoints'
 import { isRetryable } from '../lib/serverErrors'
+import { useAfter } from '../lib/useAfter'
+
+/** The demo server may be stopped between uses; say so when the first answer is slow. */
+export const WAKING_AFTER_MS = 5000
 
 type Mark = '✓' | '●' | '○'
 
@@ -31,6 +35,8 @@ interface Props {
  * and the risk request (weather + scoring happen together on the server).
  */
 export function SearchStatus({ searched, routes, risk, now = Date.now }: Props) {
+  const waiting = searched && routes.isPending && !routes.isError
+  const waking = useAfter(waiting, WAKING_AFTER_MS)
   if (!searched) return null
 
   const routesFailed = routes.isError
@@ -49,6 +55,12 @@ export function SearchStatus({ searched, routes, risk, now = Date.now }: Props) 
           </Step>
           <Step mark="○">Scoring risk</Step>
         </ul>
+      )}
+
+      {waking && (
+        <p role="status" className="rounded-md bg-moderate/20 px-3 py-2 text-sm">
+          Waking the server… this can take up to a minute.
+        </p>
       )}
 
       {routesFailed && (

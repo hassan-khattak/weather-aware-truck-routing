@@ -172,3 +172,20 @@ describe('riskSplitText', () => {
     expect(riskSplitText(none)).toBe('No risk data')
   })
 })
+
+describe('when the weather step failed', () => {
+  it('says the risk is unavailable instead of waiting forever or showing a safe bar', () => {
+    render(
+      <RouteCards
+        trip={makeRoutes()}
+        risk={undefined}
+        riskFailed
+        selectedId="A"
+        onSelect={() => {}}
+      />,
+    )
+    expect(screen.getAllByText('Weather risk unavailable')).toHaveLength(2)
+    expect(screen.queryByText(/checking/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('img')).not.toBeInTheDocument() // no risk bar at all
+  })
+})

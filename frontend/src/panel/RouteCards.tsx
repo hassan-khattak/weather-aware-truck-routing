@@ -9,12 +9,14 @@ const LONG_RANGE_NOTE =
 interface Props {
   trip: RoutesResponse
   risk: RiskResponse | undefined
+  /** The weather step failed: say the risk is unknown instead of waiting for it. */
+  riskFailed?: boolean
   selectedId: string | null
   onSelect: (routeId: string) => void
 }
 
 /** Banners, the recommendation, and one card per route. */
-export function RouteCards({ trip, risk, selectedId, onSelect }: Props) {
+export function RouteCards({ trip, risk, riskFailed = false, selectedId, onSelect }: Props) {
   const recommendation = risk?.recommendation
   return (
     <section aria-label="Routes" className="mt-4 space-y-3">
@@ -54,6 +56,7 @@ export function RouteCards({ trip, risk, selectedId, onSelect }: Props) {
               route={route}
               risk={risk?.routes.find((r) => r.id === route.id)}
               riskKnown={risk !== undefined}
+              riskFailed={riskFailed}
               selected={route.id === selectedId}
               recommended={route.id === recommendation?.route_id}
               onSelect={() => onSelect(route.id)}
@@ -69,12 +72,13 @@ interface CardProps {
   route: Route
   risk: RouteRisk | undefined
   riskKnown: boolean
+  riskFailed: boolean
   selected: boolean
   recommended: boolean
   onSelect: () => void
 }
 
-function Card({ route, risk, riskKnown, selected, recommended, onSelect }: CardProps) {
+function Card({ route, risk, riskKnown, riskFailed, selected, recommended, onSelect }: CardProps) {
   const border = selected ? 'border-accent ring-2 ring-accent/30' : 'border-line'
   return (
     <div className={`rounded-lg border bg-white ${border}`}>
@@ -103,7 +107,11 @@ function Card({ route, risk, riskKnown, selected, recommended, onSelect }: CardP
             <RiskBar miles={risk.summary.miles} />
           ) : (
             <span className="block text-xs text-muted">
-              {riskKnown ? 'Risk not available for this route' : 'Weather risk: checking…'}
+              {riskFailed
+                ? 'Weather risk unavailable'
+                : riskKnown
+                  ? 'Risk not available for this route'
+                  : 'Weather risk: checking…'}
             </span>
           )}
         </span>

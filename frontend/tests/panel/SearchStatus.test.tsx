@@ -1,7 +1,8 @@
 import type { UseQueryResult } from '@tanstack/react-query'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { act } from '@testing-library/react'
 import { ApiError } from '../../src/api/client'
 import type { RiskResponse, RoutesResponse } from '../../src/api/types'
 import { SearchStatus } from '../../src/panel/SearchStatus'
@@ -99,6 +100,41 @@ describe('problems', () => {
     expect(alert).toHaveTextContent('weather risk is unknown') // never shown as safe
     await userEvent.click(screen.getByRole('button', { name: /try again/i }))
     expect(risk.refetch).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('every error code', () => {
+  const cases: [string, number, string, boolean][] = [
+    ['OUT_OF_COVERAGE', 422, 'Currently supports routes within the continental US.', false],
+    ['NO_ROUTE', 422, 'No truck route found between these places. Try a nearby city.', false],
+    ['VALIDATION_ERROR', 400, 'Choose a destination different from the origin.', false],
+    ['PROVIDER_UNAVAILABLE', 503, 'Weather/route data is temporarily unavailable.', true],
+    ['RATE_LIMITED', 429, 'Too many searches; please wait a few minutes.', true],
+    ['NETWORK', 0, "Can't reach the server. Check your connection and try again.", true],
+  ]
+  it.each(cases)('%s shows its message and the right recovery', (code, status, message, retry) => {
+    const routes = result<RoutesResponse>({ error: new ApiError(status, code, message) })
+    render(<SearchStatus searched routes={routes} risk={riskPending()} />)
+    expect(screen.getByRole('alert')).toHaveTextContent(message)
+    expect(!!screen.queryByRole('button', { name: /try again/i })).toBe(retry)
+  })
+})
+
+describe('waking server', () => {
+  afterEach(() => vi.useRealTimers())
+
+  it('says so only when the first answer is slow, and stops when it arrives', () => {
+    vi.useFakeTimers()
+    const { rerender } = render(
+      <SearchStatus searched routes={routesPending()} risk={riskPending()} />,
+    )
+    expect(screen.queryByText(/waking the server/i)).not.toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(4900))
+    expect(screen.queryByText(/waking the server/i)).not.toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(200))
+    expect(screen.getByText(/waking the server/i)).toBeInTheDocument()
+    rerender(<SearchStatus searched routes={routesDone()} risk={riskPending()} />)
+    expect(screen.queryByText(/waking the server/i)).not.toBeInTheDocument()
   })
 })
 
