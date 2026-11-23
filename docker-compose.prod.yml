@@ -1,6 +1,7 @@
 # Production stack on the EC2 instance. Deployed by the CD workflow over SSM.
 # Required env (written to /opt/truckroute/.env by the deploy script from SSM parameters):
-#   BACKEND_IMAGE, GIT_SHA, SECRET_KEY, ORIGIN_SECRET, POSTGRES_PASSWORD, ALLOWED_HOSTS
+#   BACKEND_IMAGE, GIT_SHA, SECRET_KEY, ORIGIN_SECRET, POSTGRES_PASSWORD, ALLOWED_HOSTS,
+#   TOM_TOM_API_KEY
 services:
   caddy:
     image: caddy:2
@@ -20,12 +21,14 @@ services:
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py createcachetable &&
+             python manage.py seed_towns &&
              gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     environment:
       DEBUG: "False"
       SECRET_KEY: ${SECRET_KEY:?}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:?}
       GIT_SHA: ${GIT_SHA:?}
+      TOM_TOM_API_KEY: ${TOM_TOM_API_KEY:?}
       DATABASE_URL: postgres://truckroute:${POSTGRES_PASSWORD:?}@db:5432/truckroute
     depends_on:
       db:

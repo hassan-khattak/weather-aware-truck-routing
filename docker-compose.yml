@@ -23,6 +23,7 @@ services:
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py createcachetable &&
+             python manage.py seed_towns &&
              python manage.py runserver 0.0.0.0:8000"
     environment:
       DEBUG: "True"

@@ -81,6 +81,7 @@ jobs:
       - name: Validate production compose file
         run: |
           BACKEND_IMAGE=x GIT_SHA=x SECRET_KEY=x ORIGIN_SECRET=x POSTGRES_PASSWORD=x ALLOWED_HOSTS=x \
+          TOM_TOM_API_KEY=x \
             docker compose -f docker-compose.prod.yml config -q
       - name: Validate Caddyfile
         run: |

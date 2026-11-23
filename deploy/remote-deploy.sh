@@ -17,6 +17,7 @@ GIT_SHA=${GIT_SHA}
 SECRET_KEY=$(param django_secret_key)
 ORIGIN_SECRET=$(param origin_secret)
 POSTGRES_PASSWORD=$(param postgres_password)
+TOM_TOM_API_KEY=$(param tomtom_api_key)
 # Caddy only forwards requests that carry the origin secret, so any Host is acceptable here.
 ALLOWED_HOSTS=*
 EOF
