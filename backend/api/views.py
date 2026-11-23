@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from api import clock
 from api.errors import TripExpired, message_error
+from api.force_error import maybe_force_error
 from api.rules import get_rules
 from api.schemas import (
     ErrorResponse,
@@ -57,6 +58,7 @@ class PlacesView(APIView):
         tags=["search"],
     )
     def get(self, request: Request) -> Response:
+        maybe_force_error(request)
         query = " ".join(request.query_params.get("q", "").split())
         if len(query) < PLACES_MIN_CHARS:
             raise message_error("q", f"Type at least {PLACES_MIN_CHARS} characters to search.")
@@ -88,6 +90,7 @@ class RoutesView(APIView):
         tags=["search"],
     )
     def post(self, request: Request) -> Response:
+        maybe_force_error(request)
         rules = get_rules()
         now = clock.now()
         trip_request = parse_routes_request(request.data, now=now, rules=rules)
@@ -117,6 +120,7 @@ class RiskView(APIView):
         tags=["search"],
     )
     def post(self, request: Request) -> Response:
+        maybe_force_error(request)
         data = request.data
         if isinstance(data, dict) and set(data) - {"trip_id"}:
             raise message_error(sorted(set(data) - {"trip_id"})[0], "This field is not allowed.")
