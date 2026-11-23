@@ -21,6 +21,9 @@ if not SECRET_KEY:
 
 ALLOWED_HOSTS = [h for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h]
 
+# TomTom routing and search. The key stays server-side; the browser never sees it.
+TOMTOM_API_KEY = os.environ.get("TOM_TOM_API_KEY", "")
+
 # Git commit of the running build; reported by /api/v1/health.
 GIT_SHA = os.environ.get("GIT_SHA", "dev")
 

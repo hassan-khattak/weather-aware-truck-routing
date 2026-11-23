@@ -28,6 +28,7 @@ services:
       DEBUG: "True"
       SECRET_KEY: ${SECRET_KEY:-dev-only-insecure-key}
       ALLOWED_HOSTS: "*"
+      TOM_TOM_API_KEY: ${TOM_TOM_API_KEY:-}
       DATABASE_URL: postgres://${POSTGRES_USER:-truckroute}:${POSTGRES_PASSWORD:-truckroute}@db:5432/${POSTGRES_DB:-truckroute}
     volumes:
       - ./backend:/app
