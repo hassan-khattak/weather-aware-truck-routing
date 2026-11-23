@@ -10,6 +10,8 @@ dependencies = [
     "pydantic>=2.14.4",
     "pyyaml>=6.0.4",
     "httpx>=0.28.1",
+    "timezonefinder>=9.2.0",
+    "tzdata>=2026.6",
 ]
 
 [dependency-groups]
@@ -50,4 +52,4 @@ strict = true
 django_settings_module = "config.settings"
 
 [tool.ruff.lint.isort]
-known-first-party = ["core", "api", "config", "providers"]
+known-first-party = ["core", "api", "config", "providers", "places"]
