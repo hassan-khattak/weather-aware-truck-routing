@@ -21,6 +21,11 @@ describe('App', () => {
     const { unmount } = render(<App />)
 
     expect(screen.getByTestId('map')).toBeInTheDocument()
+    expect(screen.getByRole('complementary', { name: 'Trip planner' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /weather-aware truck routing/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/open-meteo/i)).toBeInTheDocument() // attribution
     expect(MapMock).toHaveBeenCalledTimes(1)
     expect(MapMock.mock.calls[0][0]).toMatchObject({ bounds: US_BOUNDS })
 
