@@ -91,6 +91,11 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [],
     "UNAUTHENTICATED_USER": None,
     "EXCEPTION_HANDLER": "api.errors.exception_handler",
+    # Per client IP, counted in the Django cache (plan.md section 5.6).
+    "DEFAULT_THROTTLE_RATES": {"places": "300/hour", "routes": "30/hour", "risk": "60/hour"},
+    # How many proxies sit in front of Django. 0 = trust only the socket address (dev, CI).
+    # In production the real client IP comes via X-Forwarded-For; see docs/phase notes (Phase 8).
+    "NUM_PROXIES": int(os.environ.get("NUM_PROXIES", "0")),
 }
 
 USE_TZ = True
