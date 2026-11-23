@@ -26,3 +26,13 @@ describe('HeatmapControls', () => {
     expect(screen.getByRole('radio', { name: 'Snow' })).toBeDisabled()
   })
 })
+
+describe('HeatmapControls on phones', () => {
+  it('folds into one button that opens and closes the controls', async () => {
+    render(<HeatmapControls />)
+    const toggle = screen.getByRole('button', { name: /^Weather/ })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  })
+})

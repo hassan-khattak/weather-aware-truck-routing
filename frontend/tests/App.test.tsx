@@ -382,6 +382,8 @@ describe('accessibility', () => {
   it('tabs through the form in reading order', async () => {
     renderApp()
     const order = [
+      // Only shown on phones (CSS hides it on desktop; jsdom has no stylesheet).
+      screen.getByRole('button', { name: /hide trip details/i }),
       screen.getByRole('combobox', { name: 'Origin' }),
       screen.getByRole('button', { name: /swap origin and destination/i }),
       screen.getByRole('combobox', { name: 'Destination' }),

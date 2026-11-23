@@ -83,7 +83,7 @@ export function TimeSlider({ startUtc, tz, hours, route }: Props) {
   return (
     <section
       aria-label="Forecast time"
-      className="absolute right-3 bottom-8 left-3 z-10 mx-auto max-w-xl rounded-lg bg-white/95 p-3 shadow-md"
+      className="absolute right-3 bottom-8 left-3 z-10 max-md:bottom-[calc(var(--sheet-h,0px)+0.5rem)] mx-auto max-w-xl rounded-lg bg-white/95 p-3 shadow-md"
     >
       <div className="flex items-center gap-2">
         <PlayButton />
