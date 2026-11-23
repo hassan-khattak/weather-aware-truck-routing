@@ -1,6 +1,7 @@
 """Shared domain types. Pure Python: no Django, no I/O."""
 
 from dataclasses import dataclass
+from datetime import datetime
 from enum import IntEnum
 from typing import Self
 
@@ -67,3 +68,19 @@ class Classification:
 
     level: Level
     reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class HourlySeries:
+    """Hourly forecast for one place, in UTC, starting at `start_utc` (on the hour).
+
+    Index i is the hour labelled `start_utc + i hours`. Wind and gusts are instantaneous at
+    that hour; rain and snow are totals for the hour *ending* at that label. `None` marks a
+    missing value.
+    """
+
+    start_utc: datetime
+    wind_mph: tuple[float | None, ...]
+    gust_mph: tuple[float | None, ...]
+    rain_in_hr: tuple[float | None, ...]
+    snow_in_hr: tuple[float | None, ...]

@@ -3,11 +3,11 @@
 from pathlib import Path
 
 import pytest
-from core.risk import classify
 from hypothesis import given
 from hypothesis import strategies as st
 
 from core.models import RANKED_LEVELS, Level, Weather
+from core.risk import classify
 from core.rules import Classification, load_rules
 
 RULES = load_rules(Path(__file__).resolve().parents[2] / "rules.yaml")

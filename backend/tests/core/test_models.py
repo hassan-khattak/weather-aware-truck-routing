@@ -1,6 +1,7 @@
 import dataclasses
 
 import pytest
+
 from core.models import RANKED_LEVELS, Level, Weather
 
 

@@ -3,8 +3,8 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from core.forecast_hour import weather_at
 
+from core.forecast_hour import weather_at
 from core.models import HourlySeries, Weather
 
 START = datetime(2026, 11, 24, 12, 0, tzinfo=UTC)

@@ -46,3 +46,6 @@ strict = true
 
 [tool.django-stubs]
 django_settings_module = "config.settings"
+
+[tool.ruff.lint.isort]
+known-first-party = ["core", "api", "config"]
