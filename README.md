@@ -2,6 +2,8 @@
 
 Pick the safest truck route for a trip by looking at the weather the truck will actually meet, when it gets there, for its load weight and its travel time. A React + TypeScript + MapLibre front end on a Django REST back end.
 
+**Live app:** https://d8j903yhaphz3.cloudfront.net
+
 - Search a trip: origin, destination, departure time (in the origin's local time) and cargo weight.
 - Get up to three **real truck routes** drawn immediately, then a **risk-coloured** route, a **recommendation with the reason**, and a checkpoint list with the cause of every risk level.
 - Explore the **next 48 hours** with a weather overlay (risk for this truck, wind, rain, snow), a slider, a moving truck marker and ▶ Play.
