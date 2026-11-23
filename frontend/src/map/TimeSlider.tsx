@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, type KeyboardEvent } from 'react'
 import type { Route } from '../api/types'
+import { createPlayer } from '../lib/play'
 import { sliderLabel } from '../lib/time'
 import { useUiStore } from '../state/uiStore'
 import { toLngLat } from './routeLayers'
@@ -37,6 +38,28 @@ export function TimeSlider({ startUtc, tz, hours, route }: Props) {
     })
   }, [startUtc, tz])
 
+  // Play runs the hour forward; the player lives outside React and only touches the store.
+  useEffect(() => {
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    const player = createPlayer({
+      store: useUiStore,
+      last,
+      reducedMotion: reduced,
+      frame: (callback) => requestAnimationFrame(callback),
+      cancel: (id) => cancelAnimationFrame(id),
+    })
+    if (useUiStore.getState().playing) player.start()
+    const unsubscribe = useUiStore.subscribe((now, before) => {
+      if (now.playing === before.playing) return
+      if (now.playing) player.start()
+      else player.stop()
+    })
+    return () => {
+      unsubscribe()
+      player.stop()
+    }
+  }, [last])
+
   function setHour(hour: number) {
     const { setHour, setPlaying } = useUiStore.getState()
     setPlaying(false) // touching the slider takes over from Play
@@ -62,7 +85,12 @@ export function TimeSlider({ startUtc, tz, hours, route }: Props) {
       aria-label="Forecast time"
       className="absolute right-3 bottom-8 left-3 z-10 mx-auto max-w-xl rounded-lg bg-white/95 p-3 shadow-md"
     >
-      <HourReadout startUtc={startUtc} tz={tz} last={last} route={route} />
+      <div className="flex items-center gap-2">
+        <PlayButton />
+        <div className="min-w-0 flex-1">
+          <HourReadout startUtc={startUtc} tz={tz} last={last} route={route} />
+        </div>
+      </div>
       <input
         ref={input}
         type="range"
@@ -99,5 +127,19 @@ function HourReadout({ startUtc, tz, last, route }: Omit<Props, 'hours'> & { las
         {status}
       </span>
     </div>
+  )
+}
+
+function PlayButton() {
+  const playing = useUiStore((s) => s.playing)
+  return (
+    <button
+      type="button"
+      aria-pressed={playing}
+      onClick={() => useUiStore.getState().setPlaying(!playing)}
+      className="rounded-md border border-line px-2.5 py-1 text-sm font-medium focus:ring-2 focus:ring-accent/50 focus:outline-none"
+    >
+      {playing ? '⏸ Pause' : '▶ Play'}
+    </button>
   )
 }

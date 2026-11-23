@@ -60,6 +60,17 @@ describe('TimeSlider', () => {
     expect(useUiStore.getState().hour).toBe(0)
   })
 
+  it('has a Play button that follows the store', async () => {
+    setup()
+    const play = screen.getByRole('button', { name: /play/i })
+    expect(play).toHaveAttribute('aria-pressed', 'false')
+    await userEvent.click(play)
+    expect(useUiStore.getState().playing).toBe(true)
+    expect(screen.getByRole('button', { name: /pause/i })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(screen.getByRole('button', { name: /pause/i }))
+    expect(useUiStore.getState().playing).toBe(false)
+  })
+
   it('stops at the end of the forecast window and takes over from Play', async () => {
     const { slider } = setup()
     useUiStore.getState().setPlaying(true)

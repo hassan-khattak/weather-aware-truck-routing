@@ -212,6 +212,7 @@ export function MapView({
     // Time, layer and visibility changes go straight to the map; React does not re-render.
     const unsubscribe = useUiStore.subscribe((now, before) => {
       if (now.heatmapLayer !== before.heatmapLayer) layer.setLayer(now.heatmapLayer)
+      if (now.playing !== before.playing) layer.setPlaying(now.playing)
       if (now.heatmapVisible !== before.heatmapVisible) layer.setVisible(now.heatmapVisible)
       if (now.hour !== before.hour) {
         layer.show(now.hour)
