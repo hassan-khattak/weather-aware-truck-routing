@@ -152,4 +152,44 @@ describe('App', () => {
     expect(fake.sources).toHaveLength(3)
     expect(fake.layers).toHaveLength(3)
   })
+
+  it('folds the form into a summary after a search and keeps the values when reopened', async () => {
+    stubApi('A')
+    renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+
+    // The summary replaces the visible form; the form is only hidden.
+    expect(await screen.findByText(/^Denver → Cheyenne · .* · 42,000 lb$/)).toBeInTheDocument()
+    expect(screen.getByRole('form', { name: 'Plan a trip', hidden: true })).not.toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Edit trip' }))
+    expect(screen.getByRole('form', { name: 'Plan a trip' })).toBeVisible()
+    expect(screen.getByRole('combobox', { name: 'Origin' })).toHaveValue('Denver, CO')
+    expect(screen.getByRole('combobox', { name: 'Destination' })).toHaveValue('Cheyenne, WY')
+  })
+
+  it('reopens the form and shows the message when the search fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              error: {
+                code: 'NO_ROUTE',
+                message: 'No truck route found between these places. Try a nearby city.',
+              },
+            }),
+            { status: 422 },
+          ),
+      ),
+    )
+    renderApp()
+    await userEvent.click(screen.getByRole('button', { name: /denver → cheyenne/i }))
+
+    expect(
+      await screen.findByText(/no truck route found between these places/i),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('form', { name: 'Plan a trip' })).toBeVisible() // ready to fix
+  })
 })

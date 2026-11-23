@@ -10,7 +10,7 @@ import { PlaceField } from './PlaceField'
 export const DEFAULT_LOAD_LB = 42000
 
 interface Props {
-  onSubmit: (request: RoutesRequest) => void
+  onSubmit: (request: RoutesRequest, originTz: string) => void
   /** Field messages from the server (e.g. a rule the browser cannot check). */
   serverErrors?: Partial<Record<keyof TripErrors, string>>
   now?: Clock
@@ -34,15 +34,15 @@ export function TripForm({ onSubmit, serverErrors, now = () => DateTime.now(), i
   const zone = origin?.tz ?? null
   const window = zone ? departureWindow(zone, now()) : null
 
-  function submitRequest(request: RoutesRequest) {
+  function submitRequest(request: RoutesRequest, originTz: string) {
     setShowErrors(false)
-    onSubmit(request)
+    onSubmit(request, originTz)
   }
 
   function submit(event: React.FormEvent) {
     event.preventDefault()
     setShowErrors(true)
-    if (check.request) submitRequest(check.request)
+    if (check.request && origin?.tz) submitRequest(check.request, origin.tz)
     else firstError.current?.focus()
   }
 
@@ -57,7 +57,7 @@ export function TripForm({ onSubmit, serverErrors, now = () => DateTime.now(), i
       { origin: trip.origin, destination: trip.destination, departure: departureTime, load },
       now(),
     )
-    if (result.request) submitRequest(result.request)
+    if (result.request) submitRequest(result.request, tz)
     else setShowErrors(true)
   }
 

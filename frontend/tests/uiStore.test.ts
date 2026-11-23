@@ -15,6 +15,7 @@ describe('ui store', () => {
   it('starts empty with the form open', () => {
     expect(useUiStore.getState()).toMatchObject({
       request: null,
+      originTz: null,
       searchId: 0,
       selectedRouteId: null,
       formCollapsed: false,
@@ -23,23 +24,24 @@ describe('ui store', () => {
 
   it('a new search folds the form and forgets the previous selection', () => {
     useUiStore.getState().selectRoute('B')
-    useUiStore.getState().submit(REQUEST)
+    useUiStore.getState().submit(REQUEST, 'America/Denver')
     expect(useUiStore.getState()).toMatchObject({
       request: REQUEST,
+      originTz: 'America/Denver',
       selectedRouteId: null,
       formCollapsed: true,
     })
   })
 
   it('every submit gets a new search id, even with identical input', () => {
-    useUiStore.getState().submit(REQUEST)
+    useUiStore.getState().submit(REQUEST, 'America/Denver')
     const first = useUiStore.getState().searchId
-    useUiStore.getState().submit(REQUEST)
+    useUiStore.getState().submit(REQUEST, 'America/Denver')
     expect(useUiStore.getState().searchId).toBe(first + 1)
   })
 
   it('selects routes and reopens the form', () => {
-    useUiStore.getState().submit(REQUEST)
+    useUiStore.getState().submit(REQUEST, 'America/Denver')
     useUiStore.getState().selectRoute('C')
     useUiStore.getState().setFormCollapsed(false)
     expect(useUiStore.getState()).toMatchObject({ selectedRouteId: 'C', formCollapsed: false })

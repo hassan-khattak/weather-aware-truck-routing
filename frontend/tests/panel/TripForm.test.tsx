@@ -16,7 +16,7 @@ afterEach(() => vi.unstubAllGlobals())
 
 function setup(props: Partial<Parameters<typeof TripForm>[0]> = {}) {
   vi.stubGlobal('fetch', vi.fn())
-  const onSubmit = vi.fn<(request: RoutesRequest) => void>()
+  const onSubmit = vi.fn<(request: RoutesRequest, originTz: string) => void>()
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   render(
     <QueryClientProvider client={client}>
@@ -53,12 +53,15 @@ describe('sample trips', () => {
     await user.click(screen.getByRole('button', { name: /chicago → dallas/i }))
 
     expect(onSubmit).toHaveBeenCalledTimes(1)
-    expect(onSubmit).toHaveBeenCalledWith({
-      origin: { label: 'Chicago, IL', lat: 41.8781, lon: -87.6298 },
-      destination: { label: 'Dallas, TX', lat: 32.7767, lon: -96.797 },
-      departure_local: '2026-11-24T13:00',
-      load_lb: 42000,
-    })
+    expect(onSubmit).toHaveBeenCalledWith(
+      {
+        origin: { label: 'Chicago, IL', lat: 41.8781, lon: -87.6298 },
+        destination: { label: 'Dallas, TX', lat: 32.7767, lon: -96.797 },
+        departure_local: '2026-11-24T13:00',
+        load_lb: 42000,
+      },
+      'America/Chicago',
+    )
     expect(screen.getByRole('combobox', { name: 'Origin' })).toHaveValue('Chicago, IL')
   })
 
@@ -86,12 +89,15 @@ describe('submitting', () => {
   it('sends the request for a valid form', async () => {
     const { onSubmit, user } = setup({ initial: INITIAL })
     await user.click(submitButton())
-    expect(onSubmit).toHaveBeenCalledWith({
-      origin: { label: 'Dallas, TX', lat: 32.7767, lon: -96.797 },
-      destination: { label: 'Denver, CO', lat: 39.7392, lon: -104.9903 },
-      departure_local: '2026-11-24T15:00',
-      load_lb: 42000,
-    })
+    expect(onSubmit).toHaveBeenCalledWith(
+      {
+        origin: { label: 'Dallas, TX', lat: 32.7767, lon: -96.797 },
+        destination: { label: 'Denver, CO', lat: 39.7392, lon: -104.9903 },
+        departure_local: '2026-11-24T15:00',
+        load_lb: 42000,
+      },
+      'America/Chicago',
+    )
   })
 
   it('explains what is missing and does not search', async () => {
