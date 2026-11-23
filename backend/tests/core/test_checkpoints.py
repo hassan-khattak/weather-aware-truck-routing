@@ -90,9 +90,7 @@ def test_checkpoint_on_a_later_segment_uses_distance_along_the_whole_route() -> 
     assert haversine_mi(route[1], (lat, lon)) == pytest.approx(100 - DEGREE_MI, abs=0.05)
 
 
-def test_a_last_gap_under_one_mile_replaces_the_last_regular_checkpoint_with_the_destination() -> (
-    None
-):
+def test_a_last_gap_under_one_mile_is_absorbed_by_the_destination() -> None:
     route: list[Point] = [(35.0, -100.0), (35.0 + 50.5 / DEGREE_MI, -100.0)]  # ~50.5 mi
     miles = [round(c.mile, 2) for c in place_checkpoints(route, 25)]
     assert miles == [0, 25, 50.5]

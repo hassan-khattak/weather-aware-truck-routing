@@ -84,3 +84,13 @@ class HourlySeries:
     gust_mph: tuple[float | None, ...]
     rain_in_hr: tuple[float | None, ...]
     snow_in_hr: tuple[float | None, ...]
+
+
+@dataclass(frozen=True)
+class CheckpointPoint:
+    """A place along a route where weather will be sampled (before ETA and weather are known)."""
+
+    idx: int
+    mile: float
+    lat: float
+    lon: float
