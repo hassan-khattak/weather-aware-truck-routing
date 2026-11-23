@@ -63,7 +63,13 @@ departure:
 
 weather_grid:
   checkpoint_deg: 0.1
-  heatmap_deg: 0.2
+  # Heatmap cell size by the longest route. Open-Meteo bills one call per location, so long trips
+  # use coarser cells to keep a search under ~450 locations. Sizes must be multiples of
+  # checkpoint_deg so cell centres sit on checkpoint grid points (shared weather cache).
+  heatmap_tiers:
+    - {max_mi_inclusive: 500,  deg: 0.2}
+    - {max_mi_inclusive: 1000, deg: 0.4}
+    - {otherwise: true,        deg: 0.8}
   corridor_mi: 30
   forecast_ttl_s: 3600
   stale_ttl_s: 86400

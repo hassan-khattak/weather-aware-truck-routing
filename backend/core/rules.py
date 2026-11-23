@@ -98,13 +98,45 @@ class Departure(_Model):
     long_range_note_h: float
 
 
+class GridTier(_Model):
+    """Heatmap cell size for trips up to a given length (the last tier is `otherwise`)."""
+
+    max_mi_inclusive: float | None = None
+    otherwise: bool = False
+    deg: float
+
+    @model_validator(mode="after")
+    def _exactly_one_bound(self) -> Self:
+        if (self.max_mi_inclusive is not None) == self.otherwise:
+            raise ValueError("heatmap tier needs exactly one of max_mi_inclusive, otherwise")
+        return self
+
+
 class WeatherGrid(_Model):
     checkpoint_deg: float
-    heatmap_deg: float
+    heatmap_tiers: list[GridTier]
     corridor_mi: float
     forecast_ttl_s: int
     stale_ttl_s: int
     batch_size: int
+
+    @field_validator("heatmap_tiers")
+    @classmethod
+    def _tiers_end_with_otherwise(cls, value: list[GridTier]) -> list[GridTier]:
+        if not value or not value[-1].otherwise:
+            raise ValueError("heatmap_tiers must end with an 'otherwise' entry")
+        return value
+
+    @model_validator(mode="after")
+    def _cells_are_multiples_of_the_checkpoint_grid(self) -> Self:
+        for tier in self.heatmap_tiers:
+            ratio = tier.deg / self.checkpoint_deg
+            if abs(ratio - round(ratio)) > 1e-6:
+                raise ValueError(
+                    f"heatmap tier size {tier.deg} must be a multiple of checkpoint_deg "
+                    f"({self.checkpoint_deg})"
+                )
+        return self
 
 
 class Heatmap(_Model):

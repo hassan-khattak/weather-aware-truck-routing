@@ -3,6 +3,7 @@
 import base64
 import math
 import struct
+from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
@@ -128,7 +129,7 @@ CELLS: list[Point] = [(35.0, -100.0), (35.2, -100.0)]
 
 def pack(
     cells: list[Point],
-    hours: list[list[Weather | None]],
+    hours: Sequence[Sequence[Weather | None]],
     load_lb: float,
     grid_deg: float = 0.2,
 ) -> PackedHeatmap:

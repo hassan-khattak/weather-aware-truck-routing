@@ -12,7 +12,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from math import ceil, cos, floor, hypot, radians
 
-from core.checkpoints import EARTH_RADIUS_MI
+from core.checkpoints import EARTH_RADIUS_MI, route_length_mi
 from core.models import Point, Weather
 from core.risk import classify
 from core.rules import Rules
@@ -51,12 +51,27 @@ def _distance_to_segment_mi(centre: Point, a: Point, b: Point) -> float:
     return hypot(ax + t * dx, ay + t * dy)
 
 
+def heatmap_grid_deg(longest_route_mi: float, rules: Rules) -> float:
+    """Heatmap cell size for a trip: coarser for long trips so one search stays within the
+    weather provider's per-call billing (rules.yaml `heatmap_tiers`)."""
+    for tier in rules.weather_grid.heatmap_tiers:
+        if tier.otherwise or (
+            tier.max_mi_inclusive is not None and longest_route_mi <= tier.max_mi_inclusive
+        ):
+            return tier.deg
+    raise ValueError("heatmap_tiers has no matching entry")  # unreachable: schema needs 'otherwise'
+
+
 def corridor_cells(routes: Sequence[Sequence[Point]], rules: Rules) -> list[Point]:
     """Centres of the heatmap cells within `corridor_mi` of any route, sorted and unique.
 
-    Simplified route geometry is fine here: the corridor is 30 miles wide.
+    Cell size comes from the longest route (`heatmap_grid_deg`); centres are multiples of it, so
+    they also sit on the 0.1 degree checkpoint grid. Simplified route geometry is fine here: the
+    corridor is 30 miles wide.
     """
-    step = rules.weather_grid.heatmap_deg
+    if not routes:
+        return []
+    step = heatmap_grid_deg(max(route_length_mi(route) for route in routes), rules)
     reach_mi = rules.weather_grid.corridor_mi
     found: set[Point] = set()
 
@@ -114,10 +129,13 @@ def pack_heatmap(
     weather_by_hour: Sequence[Sequence[Weather | None]],
     load_lb: float,
     rules: Rules,
+    *,
+    grid_deg: float,
 ) -> PackedHeatmap:
     """Pack weather for every cell and hour. `None` means no forecast for that cell and hour.
 
-    The risk layer uses the same classification and load rules as the checkpoints.
+    The risk layer uses the same classification and load rules as the checkpoints. `grid_deg` is
+    the cell size used for this trip (see `heatmap_grid_deg`).
     """
     if not weather_by_hour:
         raise ValueError("need at least one hour of weather")
@@ -143,7 +161,7 @@ def pack_heatmap(
 
     flat_cells = [float(v) for cell in cells for v in cell]
     return PackedHeatmap(
-        grid_deg=rules.weather_grid.heatmap_deg,
+        grid_deg=grid_deg,
         hours=len(weather_by_hour),
         cells=_b64(struct.pack(f"<{len(flat_cells)}f", *flat_cells)),
         layers={"risk": _u8(risk), "wind": _u8(wind), "rain": _u16(rain), "snow": _u16(snow)},
