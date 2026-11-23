@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from enum import IntEnum
-from typing import Self
+from typing import Literal, Self
 
 # (latitude, longitude) in decimal degrees.
 Point = tuple[float, float]
@@ -94,3 +94,13 @@ class CheckpointPoint:
     mile: float
     lat: float
     lon: float
+
+
+@dataclass(frozen=True)
+class Stop:
+    """A required stop: a 30-minute break or a long rest. The truck is parked during it."""
+
+    type: Literal["break", "rest"]
+    mile: float
+    start_utc: datetime
+    duration_s: float

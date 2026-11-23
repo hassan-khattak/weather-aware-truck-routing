@@ -20,6 +20,10 @@ def steady(miles: float, mph: float = 60.0) -> list[tuple[float, float]]:
     return [(0.0, 0.0), (miles, miles / mph * HOUR)]
 
 
+def has_point(timeline: list[tuple[float, float]], elapsed: float, mile: float) -> bool:
+    return any(e == pytest.approx(elapsed) and m == pytest.approx(mile) for e, m in timeline)
+
+
 def test_driving_time_interpolates_linearly_between_anchors() -> None:
     plan = build_eta_plan([(0, 0), (10, 600), (100, 3000)], 100, DEP, RULES)
     assert plan.drive_s_at_mile(10) == pytest.approx(600)
@@ -115,8 +119,8 @@ def test_timeline_has_flat_segments_for_stops() -> None:
     assert timeline[-1][1] == pytest.approx(720)
 
     break_start = 8 * HOUR
-    assert (pytest.approx(break_start), pytest.approx(480)) in timeline
-    assert (pytest.approx(break_start + 1800), pytest.approx(480)) in timeline
+    assert has_point(timeline, break_start, 480)
+    assert has_point(timeline, break_start + 1800, 480)
 
 
 def test_timeline_never_goes_backwards() -> None:
