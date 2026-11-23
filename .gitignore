@@ -41,3 +41,4 @@ crash.log
 
 # Provider lock files: add once generated for linux_amd64 + darwin_arm64 (see infra/)
 .terraform.lock.hcl
+db.sqlite3
