@@ -9,12 +9,14 @@ import hashlib
 import json
 from datetime import UTC, datetime
 from typing import Any, Protocol
+from urllib.parse import quote
 
 import httpx
 
 from core.models import Point
 from providers.base import (
     NoRoute,
+    Place,
     ProviderError,
     ProviderUnavailable,
     RawRoute,
@@ -27,6 +29,15 @@ _BASE_URL = "https://api.tomtom.com"
 # TomTom 400 codes that mean "there is no truck route for these two places".
 _NO_ROUTE_CODES = {"NO_ROUTE_FOUND", "MAP_MATCHING_FAILURE"}
 _ROUTE_CACHE_TTL_S = 30 * 60
+_PLACES_CACHE_TTL_S = 24 * 60 * 60
+# TomTom is asked for more results than the UI shows, because filtering and de-duplicating
+# (Alaska, Hawaii, territories, repeated entries) removes some.
+_SEARCH_FETCH = 10
+# The continental US plus DC: the only places the app routes between (plan.md section 3.13).
+_SUPPORTED_STATES = frozenset(
+    "AL AZ AR CA CO CT DE DC FL GA ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY "
+    "NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split()
+)
 
 
 class Cache(Protocol):
@@ -75,6 +86,26 @@ def _roads(route: dict[str, Any]) -> tuple[RoadMark, ...]:
             continue
         marks.append(RoadMark(mile=_miles(instruction["routeOffsetInMeters"]), road=name))
     return tuple(marks)
+
+
+def parse_places(payload: dict[str, Any]) -> list[Place]:
+    """Search results in the continental US, without repeats, in TomTom's order."""
+    places: list[Place] = []
+    seen: set[tuple[str, float, float]] = set()
+    for result in payload.get("results", []):
+        address = result.get("address", {})
+        state = address.get("countrySubdivision")
+        label = address.get("freeformAddress")
+        position = result.get("position")
+        if state not in _SUPPORTED_STATES or not label or not position:
+            continue
+        lat, lon = position["lat"], position["lon"]
+        key = (label, round(lat, 3), round(lon, 3))
+        if key in seen:
+            continue
+        seen.add(key)
+        places.append(Place(label=label, lat=lat, lon=lon))
+    return places
 
 
 def parse_routes(payload: dict[str, Any]) -> list[RawRoute]:
@@ -166,6 +197,38 @@ class TomTomRoutingProvider:
         if self._cache is not None:
             self._cache.set(cache_key, routes, _ROUTE_CACHE_TTL_S)
         return routes
+
+    def search(self, query: str, limit: int) -> list[Place]:
+        """Autocomplete for cities, addresses and ZIP codes in the continental US."""
+        text = " ".join(query.split())
+        cache_key = f"places:v1:{text.lower()}"
+        if self._cache is not None:
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                return list(cached)[:limit]
+
+        params = {
+            "key": self._api_key,
+            "typeahead": "true",
+            "limit": str(_SEARCH_FETCH),
+            "countrySet": "US",
+            "idxSet": "Geo,Addr,PAD,Str",
+            "language": "en-US",
+        }
+        url = f"{self._base_url}/search/2/search/{quote(text, safe='')}.json"
+        try:
+            response = self._client.get(url, params=params)
+        except httpx.HTTPError:
+            raise ProviderUnavailable("TomTom search is unreachable") from None
+        if response.status_code == 400:
+            raise ProviderError("TomTom rejected the search request")
+        if response.status_code != 200:
+            raise ProviderUnavailable(f"TomTom search unavailable (HTTP {response.status_code})")
+
+        places = parse_places(response.json())
+        if self._cache is not None:
+            self._cache.set(cache_key, places, _PLACES_CACHE_TTL_S)
+        return places[:limit]
 
     @staticmethod
     def _handle(response: httpx.Response) -> list[RawRoute]:

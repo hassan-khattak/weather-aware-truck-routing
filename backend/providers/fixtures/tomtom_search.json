@@ -1,0 +1,346 @@
+{
+ "dalla": {
+  "summary": {
+   "query": "dalla",
+   "numResults": 6
+  },
+  "results": [
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Dallas, TX",
+     "countrySubdivision": "TX",
+     "countrySubdivisionName": "Texas",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 32.777976,
+     "lon": -96.796215
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Dallas, GA",
+     "countrySubdivision": "GA",
+     "countrySubdivisionName": "Georgia",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 33.924452,
+     "lon": -84.841289
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Dallas, NC",
+     "countrySubdivision": "NC",
+     "countrySubdivisionName": "North Carolina",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 35.316547,
+     "lon": -81.175842
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Dallas, OR",
+     "countrySubdivision": "OR",
+     "countrySubdivisionName": "Oregon",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 44.919444,
+     "lon": -123.316677
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Dallas, ME",
+     "countrySubdivision": "ME",
+     "countrySubdivisionName": "Maine",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 45.002025,
+     "lon": -70.565513
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Dallastown, PA",
+     "countrySubdivision": "PA",
+     "countrySubdivisionName": "Pennsylvania",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 39.900232,
+     "lon": -76.640071
+    }
+   }
+  ]
+ },
+ "anc": {
+  "summary": {
+   "query": "anchorage",
+   "numResults": 6
+  },
+  "results": [
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Anchorage, AK",
+     "countrySubdivision": "AK",
+     "countrySubdivisionName": "Alaska",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 61.216583,
+     "lon": -149.899597
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Anchorage, KY",
+     "countrySubdivision": "KY",
+     "countrySubdivisionName": "Kentucky",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 38.265453,
+     "lon": -85.532238
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "E Mncplty of Anchorage, AK",
+     "countrySubdivision": "AK",
+     "countrySubdivisionName": "Alaska",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 61.165739,
+     "lon": -148.467107
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Jber, AK",
+     "countrySubdivision": "AK",
+     "countrySubdivisionName": "Alaska",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 61.269337,
+     "lon": -149.699795
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Indian, AK",
+     "countrySubdivision": "AK",
+     "countrySubdivisionName": "Alaska",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 61.001114,
+     "lon": -149.530235
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Anchorage, AK",
+     "countrySubdivision": "AK",
+     "countrySubdivisionName": "Alaska",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 61.216583,
+     "lon": -149.899597
+    }
+   }
+  ]
+ },
+ "hnl": {
+  "summary": {
+   "query": "honolulu",
+   "numResults": 6
+  },
+  "results": [
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Urban Honolulu, HI",
+     "countrySubdivision": "HI",
+     "countrySubdivisionName": "Hawai'i",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 21.30992,
+     "lon": -157.858158
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Honolulu, HI",
+     "countrySubdivision": "HI",
+     "countrySubdivisionName": "Hawai'i",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 21.322184,
+     "lon": -157.814938
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "East Honolulu, HI",
+     "countrySubdivision": "HI",
+     "countrySubdivisionName": "Hawai'i",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 21.275065,
+     "lon": -157.705397
+    }
+   },
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Honolulu, HI",
+     "countrySubdivision": "HI",
+     "countrySubdivisionName": "Hawai'i",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 21.30992,
+     "lon": -157.858158
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "South Honolulu Street, Ashland, IL 62612",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 39.886095,
+     "lon": -90.000587
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "East Honolulu Street, Lindsay, CA 93247",
+     "countrySubdivision": "CA",
+     "countrySubdivisionName": "California",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 36.203708,
+     "lon": -119.074439
+    }
+   }
+  ]
+ },
+ "zip": {
+  "summary": {
+   "query": "60601",
+   "numResults": 6
+  },
+  "results": [
+   {
+    "type": "Geography",
+    "address": {
+     "freeformAddress": "Chicago, IL 60601",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 41.885816,
+     "lon": -87.625292
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "East Lake Street, Chicago, IL 60601",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 41.885785,
+     "lon": -87.623926
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "East Benton Place, Chicago, IL 60601",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 41.885526,
+     "lon": -87.617498
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "North Harbor Drive, Chicago, IL 60601",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 41.885932,
+     "lon": -87.615758
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "North Westshore Drive, Chicago, IL 60601",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 41.885922,
+     "lon": -87.616259
+    }
+   },
+   {
+    "type": "Street",
+    "address": {
+     "freeformAddress": "North Stetson Avenue, Chicago, IL 60601",
+     "countrySubdivision": "IL",
+     "countrySubdivisionName": "Illinois",
+     "countryCode": "US"
+    },
+    "position": {
+     "lat": 41.886339,
+     "lon": -87.622339
+    }
+   }
+  ]
+ }
+}
