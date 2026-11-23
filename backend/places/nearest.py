@@ -74,3 +74,11 @@ def nearest_town(
         distance_mi=float(distance_mi),
         direction=compass(town_lat, town_lon, lat, lon),
     )
+
+
+def lookup_town(lat: float, lon: float) -> NearestTown | None:
+    """`nearest_town` that quietly returns None where PostGIS is not available (SQLite in local
+    tests), so naming places is always a nice-to-have and never a reason to fail a request."""
+    if connection.vendor != "postgresql":
+        return None
+    return nearest_town(lat, lon)
