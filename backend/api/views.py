@@ -18,7 +18,7 @@ from api.schemas import (
     RiskResponse,
     RoutesResponse,
 )
-from api.validation import RoutesRequestSerializer, parse_routes_request
+from api.validation import RoutesRequestSerializer, parse_routes_request, zone_if_covered
 from places.nearest import lookup_town
 from providers.factory import routing_provider, weather_provider
 from trips.payload import routes_payload
@@ -61,7 +61,13 @@ class PlacesView(APIView):
         if len(query) < PLACES_MIN_CHARS:
             raise message_error("q", f"Type at least {PLACES_MIN_CHARS} characters to search.")
         places = routing_provider().search(query, PLACES_LIMIT)
-        return Response([{"label": p.label, "lat": p.lat, "lon": p.lon} for p in places])
+        # `tz` lets the form label the departure field with the origin's zone before searching.
+        return Response(
+            [
+                {"label": p.label, "lat": p.lat, "lon": p.lon, "tz": zone_if_covered(p)}
+                for p in places
+            ]
+        )
 
 
 class RoutesView(APIView):

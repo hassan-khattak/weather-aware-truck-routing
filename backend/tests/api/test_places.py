@@ -18,7 +18,9 @@ def get(query: str | None) -> Any:
 def test_returns_matching_places_with_coordinates() -> None:
     response = get("Den")
     assert response.status_code == 200
-    assert response.json() == [{"label": "Denver, CO", "lat": 39.7392, "lon": -104.9903}]
+    assert response.json() == [
+        {"label": "Denver, CO", "lat": 39.7392, "lon": -104.9903, "tz": "America/Denver"}
+    ]
 
 
 def test_the_query_is_trimmed_and_case_insensitive() -> None:
@@ -73,3 +75,20 @@ def test_clients_are_limited_separately(monkeypatch: pytest.MonkeyPatch) -> None
 def test_the_health_check_is_never_throttled(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(ScopedRateThrottle, "THROTTLE_RATES", {"places": "1/hour"})
     assert all(APIClient().get("/api/v1/health").status_code == 200 for _ in range(5))
+
+
+def test_each_place_carries_its_time_zone_for_the_departure_label() -> None:
+    assert get("Chic").json()[0]["tz"] == "America/Chicago"
+    assert get("Seat").json()[0]["tz"] == "America/Los_Angeles"
+
+
+def test_a_place_outside_the_us_has_no_time_zone(monkeypatch: pytest.MonkeyPatch) -> None:
+    from providers.base import Place
+
+    class Stub:
+        def search(self, query: str, limit: int) -> list[Place]:
+            return [Place("Toronto, ON", 43.6532, -79.3832), Place("Dallas, TX", 32.78, -96.8)]
+
+    monkeypatch.setattr("api.views.routing_provider", lambda: Stub())
+    zones = [p["tz"] for p in get("Tor").json()]
+    assert zones == [None, "America/Chicago"]

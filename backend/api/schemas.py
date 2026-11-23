@@ -44,6 +44,10 @@ class PlaceOut(serializers.Serializer[dict[str, object]]):
     label = serializers.CharField(help_text="e.g. `Dallas, TX`")  # type: ignore[assignment]
     lat = serializers.FloatField()
     lon = serializers.FloatField()
+    tz = serializers.CharField(
+        allow_null=True,
+        help_text="IANA time zone, e.g. `America/Chicago`; null outside the continental US",
+    )
 
 
 class DepartureOut(serializers.Serializer[dict[str, str]]):

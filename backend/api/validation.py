@@ -74,6 +74,14 @@ def check_coverage(place: Place) -> str:
     return zone
 
 
+def zone_if_covered(place: Place) -> str | None:
+    """The place's IANA zone if it is in the continental US, otherwise None."""
+    try:
+        return check_coverage(place)
+    except OutOfCoverage:
+        return None
+
+
 def parse_local_departure(text: str) -> datetime:
     """A wall-clock time such as "2026-11-24T15:00", with no UTC offset."""
     try:
