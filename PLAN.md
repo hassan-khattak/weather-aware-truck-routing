@@ -111,7 +111,7 @@ Smoothness was treated as a requirement, with explicit rules:
 - **Layers are created once.** Selecting a route changes styles; nothing is removed or re-added.
 - **Simplified geometry for drawing**, full geometry for the maths.
 - **A continuous truck marker** driven by a per-route timeline that includes stops.
-- **Target: 60 fps** while dragging or playing. CI smoke-tests frame times in headless Chrome (software rendering, so it only catches gross regressions); real-hardware profiling is done by hand.
+- **Target: 60 fps** while dragging or playing. CI smoke-tests frame times in headless Chrome (software rendering, so it only catches gross regressions); real-hardware profiling is done by hand. A Chrome Performance trace of Play on a 120 Hz laptop display (production build, live site) held the display's full rate for its first four seconds: median frame gap 8.3 ms, 95th percentile 9.2 ms, and no main-thread task longer than 5 ms. The rest of that run was paced at a steady 30 fps by the browser or the OS, with the page almost idle, so the app was not the limit.
 - **Tested as built.** One Playwright test runs the production bundle (not the dev server) and fails on any console error, because bundling can break things the dev server hides (it once did: the map's worker file was missing from the build, so nothing but the basemap was drawn).
 
 ---
