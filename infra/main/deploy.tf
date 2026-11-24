@@ -26,7 +26,11 @@ data "aws_iam_policy_document" "deploy_assume" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_owner}/${var.github_repo}:environment:${var.github_environment}"]
+      # GitHub now puts the numeric owner and repo IDs in the subject; the classic form is kept as well.
+      values = [
+        "repo:${var.github_owner}@${var.github_owner_id}/${var.github_repo}@${var.github_repo_id}:environment:${var.github_environment}",
+        "repo:${var.github_owner}/${var.github_repo}:environment:${var.github_environment}",
+      ]
     }
   }
 }

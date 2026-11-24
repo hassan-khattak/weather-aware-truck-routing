@@ -36,6 +36,18 @@ variable "github_repo" {
   default = "weather-aware-truck-routing"
 }
 
+variable "github_owner_id" {
+  type        = string
+  default     = "77878352"
+  description = "Numeric GitHub id of the owner (not secret); part of the OIDC subject."
+}
+
+variable "github_repo_id" {
+  type        = string
+  default     = "1466936999"
+  description = "Numeric GitHub id of the repository (not secret); part of the OIDC subject."
+}
+
 variable "github_environment" {
   type    = string
   default = "production"
